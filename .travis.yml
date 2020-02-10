@@ -4,12 +4,26 @@ os: linux
 compiler: gcc
 
 before_script:
-  - sudo apt-get update -qq
-  - sudo apt-get install libboost-dev libboost-program-options-dev
-           
+- sudo apt-get update -qq
+- sudo apt-get install libboost-dev libboost-program-options-dev
+
 script:
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make
-  - make test
+- mkdir build
+- cd build
+- cmake ..
+- make
+- make test
+- cd ..
+
+before_deploy:
+- ls -a
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: Qsoxq6c0byYlB5jk4/iRWfGcNV8YZS0igAiCHidpccOtAb5pLKtAX+ZbUfj+Volj9kbjmt1sUWSMgiTLfqAZhcZ1qrY44kfuiEvpsVHSYGG6mMKJN5UtSGN1/fKU1BvpXU37JCvHGgHpc1i0dBz21OCJC7XwqXHOs7+w4Qv18MlfqZpNArGQUUxZu0KEA3Sd4sGeKRP3+ZSG0uh5+aVjP+CyOOtnWmmGif3EYIGXrnzzqUQzn7Ofjxlscu8L5rWa/KGEHxVHIlIs3GwgCv7S/n/BO2drlwFj3CTRkjHN6zjZYFzydmAu8YInhWBo24VxQhXmc/79VhTKk6VI+njWmZLFgmnLoyvuDhVtXfImkc8ynsZWMXACQ3kdqVBnbOye+YaQfZsMEFtkWYjWT6E7jdcqoKCMEEoRabDkIB0FKuSNaqPxl0eHQSGnMLNmxI4i+y96d/NbqhFQvnMmA8aRWinHs5dSY7lZG4DDnvA+dVBMqhzcnxsDkfvO1+7vKA11CteOXhqpP+og4z1FkfYXZLzykLJAq47Seg/XqeE6H6xrVIqRd74mx0xVviikXsHbpQZpBdSsewQ9OxNNEUpYenLOAs0/yH6h67MLpt/GpaOHL+4SITIHuxyg04R22q28clWMSF0vjsBHIfR0DySEsCflYOA+6emO+/ug4iWEJfM=
+  file: "build/src/pasim"
+  on:
+    tags: true
+    repo: Emoun/patmos-simulator
