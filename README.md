@@ -13,7 +13,7 @@
   mkdir build
   cd build
   cmake ..
-  make
+  make -j
 ```
 3. Run tests
 ```
