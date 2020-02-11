@@ -1,54 +1,46 @@
-# Requirements
+# Patmos Simulator
 
-* cmake    2.6 or above
-* boost   1.46 or above
-* C++     some compiler
+A collection of tools for simulating the Patmos processor.
 
+## Included Tools
 
-# Building and Installation
-
-1. Install required tools (see above)
-2. Run the following commands in the simulator root directory:
-```
-  mkdir build
-  cd build
-  cmake ..
-  make -j
-```
-3. Run tests
-```
-  make test
-```
-4. Be happy
-
-
-# Included Tools
-
-### `paasm`   
+#### `paasm`   
 
 A tiny assembler (accepts Patmos instructions, empty lines, and comments in the form of lines 
 starting with # -- no symbols/relocation yet)
 
 Usage: `paasm <input assembly> <binary stream>`
 
-### `padasm`  
+#### `padasm`  
 A tiny disassembler (accepts a binary stream and prints the decoded instructions).
 
 usage: `padasm <binary stream> <output assembly>`
 
-### `pasim   `
+#### `pasim   `
 
 The Patmos simulator (accepts a binary stream, loads the entire stream into the simulator's 
 main memory and begins execution at address zero).
 
 usage: `pasim <binary stream> <trace output>`
 
+## Installation
 
-# Memory Configuration
+Prebuilt binaries can be found [here](https://github.com/t-crest/patmos-simulator/releases). 
 
-## Overview
+1. Download the tarball for the latest release.
+2. Extact the tarball in your T-CREST installation folder as-is.
+3. Ensure your T-CREST installation folder is on your PATH.
+4. Done.
 
-### Memory models
+Currently, only Ubuntu binaries are available.
+For other platforms you can build the simulator yourself. 
+See the [developer instructions](#anch-developer) below.
+
+## Memory Configuration
+
+### Overview
+
+#### Memory models
 
 The simulator provides the following memory models:
 
@@ -72,7 +64,7 @@ The simulator provides the following memory models:
   Subsequently, two additional command-line options become available --gkind and
   --ramul-config.
 
-### Requests and Bursts
+#### Requests and Bursts
 
 Memory read or write request are issued by the method cache or instruction
 cache, the stack cache, the data cache, bypass loads and stores. Requests
@@ -82,7 +74,7 @@ a whole function using one request).
 The memory system is responsible for aligning requests and might transfer
 the data using multiple bursts.
 
-### Common Options
+#### Common Options
 
 The following options are common to all memory models (if applicable):
 
@@ -108,7 +100,7 @@ The following options are common to all memory models (if applicable):
 		    stalls.
 
 
-## Ideal Memory Model
+### Ideal Memory Model
 
 Options: None
 
@@ -118,7 +110,7 @@ The time to complete any request is always zero, i.e.,
   t_REQ(n) = 0
 
 
-## Fixed Delay Memory
+### Fixed Delay Memory
 
 Options:
   --bsize   burst_size  Bytes transferred per burst
@@ -139,7 +131,7 @@ to complete. For posted writes, it takes
 cycles to complete.
 
 
-## Variable Bursts Memory
+### Variable Bursts Memory
 
 Options:
   --bsize   burst_size  Bytes transferred per page access
@@ -188,7 +180,7 @@ but simplifies modelling the timing of corner-cases when a request starts
 or ends very close to the beginning of a page.
 
 
-## TDM Memory
+### TDM Memory
 
 Options:
   --cores     N           Number of cores
@@ -230,8 +222,7 @@ cycles, and posted writes of n bursts take
 
 cycles.
 
-
-## Ramulator Memory
+### Ramulator Memory
 
 Ramulator support is optional and needs to be activated using the USE_RAMULATOR
 option when invoking cmake (e.g., pass -DUSE_RAMULATOR=on to cmake).
@@ -255,7 +246,33 @@ However, the device configuration is (automatically) adapted by ramulator in
 order to match the selected burst size (--bsize). This may fail, though, when
 the device configuration (provided through --ramul-config) is incompatible.
 
-# License
+## <a name="anch-developer"></a>Developer
+
+#### Requirements
+
+* cmake    2.6 or above
+* boost   1.46 or above
+* C++     some compiler
+
+#### Setup
+
+To build the simulator, run the following commands in the root directory 
+(assuming `build` is chosen as the build directory):
+```
+  mkdir build
+  cd build
+  cmake ..
+  make -j
+```
+
+#### Test
+
+To test the simulator, run the following command in the build directory:
+```
+  make test
+```
+
+### License
 
    Copyright 2012 Technical University of Denmark, DTU Compute.
    All rights reserved.
