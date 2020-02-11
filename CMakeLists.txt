@@ -75,3 +75,36 @@ endif()
 add_subdirectory(src)
 add_subdirectory(tests)
 
+set( PROJECT_NAME "patmos-simulator")
+set( PACKAGE_TAR "${PROJECT_NAME}.tar")
+set( PACKAGE_TAR_GZ "${PACKAGE_TAR}.gz")
+set( PACKAGE_INFO_FILE "${PROJECT_NAME}-info.yml")
+set( PACKAGE_BINARIES "src/pasim" "src/pacheck" "src/paasm" "src/padasm" )
+# Build release tarball containing binaries and metadata
+add_custom_command(
+	OUTPUT ${PACKAGE_TAR_GZ} 
+		# We add all generated files to the list of outputs to ensure that cleaning will remove them.
+		${PACKAGE_TAR} ${PACKAGE_INFO_FILE}
+	
+	# Package binaries
+	COMMAND tar -cf ${PACKAGE_TAR} 
+		# Rename "src/*" to "bin/*"
+		--transform 's,^src,bin,' ${PACKAGE_BINARIES}
+
+	# Build YAML info file
+	COMMAND echo "name: ${PROJECT_NAME}" > ${PACKAGE_INFO_FILE}
+	COMMAND echo -n "version: " >> ${PACKAGE_INFO_FILE}
+	COMMAND git describe --tags >> ${PACKAGE_INFO_FILE}
+	COMMAND echo "files:" >> ${PACKAGE_INFO_FILE}
+	COMMAND tar -tf ${PACKAGE_TAR} | sed "s/^/  - /" >> ${PACKAGE_INFO_FILE}
+	
+	# Add the info file to the package
+	COMMAND tar -rf ${PACKAGE_TAR} ${PACKAGE_INFO_FILE}
+	
+	# Compress the tar
+	COMMAND gzip -9 < ${PACKAGE_TAR} > ${PACKAGE_TAR_GZ}
+	
+	DEPENDS ${PACKAGE_BINARIES}
+)
+# Rename tarball target to something better.
+add_custom_target(box DEPENDS ${PACKAGE_TAR_GZ})
