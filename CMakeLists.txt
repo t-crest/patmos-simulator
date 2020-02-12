@@ -75,8 +75,10 @@ endif()
 add_subdirectory(src)
 add_subdirectory(tests)
 
+# Save the target triple in a variable
+execute_process( COMMAND gcc -dumpmachine OUTPUT_VARIABLE TARGET_TRIPLE OUTPUT_STRIP_TRAILING_WHITESPACE )
 set( PROJECT_NAME "patmos-simulator")
-set( PACKAGE_TAR "${PROJECT_NAME}.tar")
+set( PACKAGE_TAR "${PROJECT_NAME}-${TARGET_TRIPLE}.tar")
 set( PACKAGE_TAR_GZ "${PACKAGE_TAR}.gz")
 set( PACKAGE_INFO_FILE "${PROJECT_NAME}-info.yml")
 set( PACKAGE_BINARIES "src/pasim" "src/pacheck" "src/paasm" "src/padasm" )
@@ -92,11 +94,14 @@ add_custom_command(
 		--transform 's,^src,bin,' ${PACKAGE_BINARIES}
 
 	# Build YAML info file
-	COMMAND echo "name: ${PROJECT_NAME}" > ${PACKAGE_INFO_FILE}
-	COMMAND echo -n "version: " >> ${PACKAGE_INFO_FILE}
+	COMMAND ${CMAKE_COMMAND} -E echo "name: ${PROJECT_NAME}" > ${PACKAGE_INFO_FILE}
+	COMMAND ${CMAKE_COMMAND} -E echo "target: ${TARGET_TRIPLE}" >> ${PACKAGE_INFO_FILE}
+	COMMAND ${CMAKE_COMMAND} -E echo_append "version: " >> ${PACKAGE_INFO_FILE}
 	COMMAND git describe --tags >> ${PACKAGE_INFO_FILE}
-	COMMAND echo "files:" >> ${PACKAGE_INFO_FILE}
-	COMMAND tar -tf ${PACKAGE_TAR} | sed "s/^/  - /" >> ${PACKAGE_INFO_FILE}
+	COMMAND ${CMAKE_COMMAND} -E echo_append "commit: " >> ${PACKAGE_INFO_FILE}
+	COMMAND git rev-parse HEAD >> ${PACKAGE_INFO_FILE}
+	COMMAND ${CMAKE_COMMAND} -E echo "files:" >> ${PACKAGE_INFO_FILE}
+	COMMAND tar -tf ${PACKAGE_TAR} | sed "s/^/- /" >> ${PACKAGE_INFO_FILE}
 	
 	# Add the info file to the package
 	COMMAND tar -rf ${PACKAGE_TAR} ${PACKAGE_INFO_FILE}
@@ -106,5 +111,5 @@ add_custom_command(
 	
 	DEPENDS ${PACKAGE_BINARIES}
 )
-# Rename tarball target to something better.
+# Rename release tarball target to something better.
 add_custom_target(box DEPENDS ${PACKAGE_TAR_GZ})

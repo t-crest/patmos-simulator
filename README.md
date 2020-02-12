@@ -27,14 +27,12 @@ usage: `pasim <binary stream> <trace output>`
 
 Prebuilt binaries can be found [here](https://github.com/t-crest/patmos-simulator/releases). 
 
-1. Download the tarball for the latest release.
-2. Extact the tarball in your T-CREST installation folder as-is.
+1. Download the latest release tarball for your machine.
+2. Extact the tarball in your T-CREST installation folder as-is (I.e. use the `extract here` option).
 3. Ensure your T-CREST installation folder is on your PATH.
 4. Done.
 
-Currently, only Ubuntu binaries are available.
-For other platforms you can build the simulator yourself. 
-See the [developer instructions](#anch-developer) below.
+To build the simulator from source, see the [developer instructions](#anch-developer) below.
 
 ## Memory Configuration
 
@@ -248,13 +246,14 @@ the device configuration (provided through --ramul-config) is incompatible.
 
 ## <a name="anch-developer"></a>Developer
 
-#### Requirements
+#### Setup
+
+Requirements: 
 
 * cmake    2.6 or above
-* boost   1.46 or above
-* C++     some compiler
-
-#### Setup
+* boost    1.46 or above
+* C++14    GCC or clang  
+* libelf   0.8.13 or above
 
 To build the simulator, run the following commands in the root directory 
 (assuming `build` is chosen as the build directory):
@@ -265,12 +264,29 @@ To build the simulator, run the following commands in the root directory
   make -j
 ```
 
-#### Test
+#### Testing
 
 To test the simulator, run the following command in the build directory:
 ```
-  make test
+  make -j test
 ```
+
+#### Release Packaging
+
+Requirements:
+
+* GNU-Tar utility available as `tar` on the command line.
+
+To package binaries for release, run the following command in the build directory:
+```
+  make -j box
+```
+
+It will make a tarball with the name `patmos-simulator-*.tar.gz` (where `*` is the build target)
+that includes the following:
+
+* A `bin` folder containing the release binaries.
+* A YAML file with various metadata about the release and which files are inluded.
 
 ### License
 
