@@ -1,58 +1,44 @@
-1. Requirements
-===============
+# Patmos Simulator
 
-cmake    2.6 or above
-boost   1.46 or above
-C++     some compiler
+A collection of tools for simulating the Patmos processor.
 
+## Included Tools
 
-2. Building and Installation
-============================
+#### `paasm`   
 
-a. Install required tools (see above)
-b. Run the following commands in the simulator root directory:
+A tiny assembler (accepts Patmos instructions, empty lines, and comments in the form of lines 
+starting with # -- no symbols/relocation yet)
 
-  mkdir build
-  cd build
-  cmake ..
-  make
+Usage: `paasm <input assembly> <binary stream>`
 
-c. Run tests
+#### `padasm`  
+A tiny disassembler (accepts a binary stream and prints the decoded instructions).
 
-  make test
+usage: `padasm <binary stream> <output assembly>`
 
-d. Be happy
+#### `pasim   `
 
+The Patmos simulator (accepts a binary stream, loads the entire stream into the simulator's 
+main memory and begins execution at address zero).
 
-3. Included Tools
-=================
+usage: `pasim <binary stream> <trace output>`
 
-paasm   A tiny assembler (accepts Patmos instructions, empty lines, and comments
-        in the form of lines starting with # -- no symbols/relocation yet)
+## Installation
 
-        usage:
-        paasm <input assembly> <binary stream>
+Prebuilt binaries can be found [here](https://github.com/t-crest/patmos-simulator/releases). 
 
-padasm  A tiny disassembler (accepts a binary stream and prints the decoded 
-        instructions).
+1. Download the latest release tarball for your machine.
+2. Extact the tarball in your T-CREST installation folder as-is (I.e. use the `extract here` option).
+3. Ensure your T-CREST installation folder is on your PATH.
+4. Done.
 
-        usage:
-        padasm <binary stream> <output assembly>
+To build the simulator from source, see the [developer instructions](#anch-developer) below.
 
-pasim   The Patmos simulator (accepts a binary stream, loads the entire stream
-        into the simulator's main memory and begins execution at address zero).
+## Memory Configuration
 
-        usage:
-        pasim <binary stream> <trace output>
+### Overview
 
-
-4. Memory Configuration
-=======================
-
-4.1 Overview
-------------
-
-o) Memory models
+#### Memory models
 
 The simulator provides the following memory models:
 
@@ -76,7 +62,7 @@ The simulator provides the following memory models:
   Subsequently, two additional command-line options become available --gkind and
   --ramul-config.
 
-o) Requests and Bursts
+#### Requests and Bursts
 
 Memory read or write request are issued by the method cache or instruction
 cache, the stack cache, the data cache, bypass loads and stores. Requests
@@ -86,7 +72,7 @@ a whole function using one request).
 The memory system is responsible for aligning requests and might transfer
 the data using multiple bursts.
 
-o) Common Options
+#### Common Options
 
 The following options are common to all memory models (if applicable):
 
@@ -112,8 +98,7 @@ The following options are common to all memory models (if applicable):
 		    stalls.
 
 
-4.2 Ideal Memory Model
-----------------------
+### Ideal Memory Model
 
 Options: None
 
@@ -123,8 +108,7 @@ The time to complete any request is always zero, i.e.,
   t_REQ(n) = 0
 
 
-4.3 Fixed Delay Memory
-----------------------
+### Fixed Delay Memory
 
 Options:
   --bsize   burst_size  Bytes transferred per burst
@@ -145,8 +129,7 @@ to complete. For posted writes, it takes
 cycles to complete.
 
 
-4.4 Variable Bursts Memory
---------------------------
+### Variable Bursts Memory
 
 Options:
   --bsize   burst_size  Bytes transferred per page access
@@ -195,8 +178,7 @@ but simplifies modelling the timing of corner-cases when a request starts
 or ends very close to the beginning of a page.
 
 
-4.5 TDM Memory
---------------
+### TDM Memory
 
 Options:
   --cores     N           Number of cores
@@ -238,9 +220,7 @@ cycles, and posted writes of n bursts take
 
 cycles.
 
-
-4.6 Ramulator Memory
---------------------
+### Ramulator Memory
 
 Ramulator support is optional and needs to be activated using the USE_RAMULATOR
 option when invoking cmake (e.g., pass -DUSE_RAMULATOR=on to cmake).
@@ -264,8 +244,51 @@ However, the device configuration is (automatically) adapted by ramulator in
 order to match the selected burst size (--bsize). This may fail, though, when
 the device configuration (provided through --ramul-config) is incompatible.
 
-5. License
-==========
+## <a name="anch-developer"></a>Developer
+
+#### Setup
+
+Requirements: 
+
+* cmake    2.6 or above
+* boost    1.46 or above
+* C++14    GCC or clang  
+* libelf   0.8.13 or above
+
+To build the simulator, run the following commands in the root directory 
+(assuming `build` is chosen as the build directory):
+```
+  mkdir build
+  cd build
+  cmake ..
+  make -j
+```
+
+#### Testing
+
+To test the simulator, run the following command in the build directory:
+```
+  make -j test
+```
+
+#### Release Packaging
+
+Requirements:
+
+* GNU-Tar utility available as `tar` on the command line.
+
+To package binaries for release, run the following command in the build directory:
+```
+  make -j box
+```
+
+It will make a tarball with the name `patmos-simulator-*.tar.gz` (where `*` is the build target)
+that includes the following:
+
+* A `bin` folder containing the release binaries.
+* A YAML file with various metadata about the release and which files are inluded.
+
+### License
 
    Copyright 2012 Technical University of Denmark, DTU Compute.
    All rights reserved.
