@@ -288,6 +288,26 @@ that includes the following:
 * A `bin` folder containing the release binaries.
 * A YAML file with various metadata about the release and which files are inluded.
 
+#### Deployment
+
+Travis-CI manages deploying a new release of these tools to Github Releases.
+
+To trigger a release, you simply have to push a tag with the version number of the new release:
+
+Locally, create a new tag with a version number for the release (we will use `1.0.0` as an example):
+
+```
+git tag 1.0.0
+```
+
+Then push the tag to Github:
+
+```
+git push --tags
+```
+
+Travis-CI will then handle everything and the new release binaries can be found under the Releases tab on Github.
+
 ### License
 
    Copyright 2012 Technical University of Denmark, DTU Compute.
