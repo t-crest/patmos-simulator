@@ -163,11 +163,7 @@ namespace patmos
         Data_address(base_address+0x04),
         In_stream(in_stream), IsTTY(istty),
         Out_stream(out_stream)
-    {
-      // Ensure that we can check the rd buffer of the streams
-      assert(In_stream.rdbuf() && Out_stream.rdbuf() &&
-             "UART expects streams associated with a buffer.");
-    }
+    {}
 
     /// A simulated access to a read port.
     /// @param address The memory address to read from.
