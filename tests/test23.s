@@ -1,5 +1,5 @@
 #
-# Expected Result: r2 = 0x21
+# Expected Result: '!' is output, and r2 = 0x21
 #
 
                 .word   68;
