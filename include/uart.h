@@ -87,12 +87,22 @@ namespace patmos
       // available when there is something in the stream (DAV=0 or 1).
       // when the input stream reaches the end-of-file (EOF), signal a parity
       // error, i.e., PAE = 1.
-      // TODO EOF does not work in the hardware. Instead, use escape characters
-      //      or something to signal EOF over UART.
       *value = (1 << TRE);
-      if (In_stream.rdbuf()->in_avail())
+
+      // Get current position in input stream.
+      auto current_pos = In_stream.tellg();
+
+      // Get end position of input stream.
+      In_stream.seekg(0, In_stream.end);
+      auto end_pos = In_stream.tellg();
+
+      // Reset stream to current position since the last call to `seekg` changed position.
+      In_stream.seekg (current_pos, In_stream.beg);
+
+      // We cannot use 'In_stream.peek()' because it will block waiting for input.
+      if (current_pos < end_pos)
         *value |= (1 << DAV);
-      else if (In_stream.eof() || !IsTTY)
+      else
         *value |= (1 << PAE);
 
       return true;
@@ -153,11 +163,7 @@ namespace patmos
         Data_address(base_address+0x04),
         In_stream(in_stream), IsTTY(istty),
         Out_stream(out_stream)
-    {
-      // Ensure that we can check the rd buffer of the streams
-      assert(In_stream.rdbuf() && Out_stream.rdbuf() &&
-             "UART expects streams associated with a buffer.");
-    }
+    {}
 
     /// A simulated access to a read port.
     /// @param address The memory address to read from.
