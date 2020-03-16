@@ -20,7 +20,8 @@ script:
 - cd build
 - cmake ..
 - make
-- make test
+- ctest
+- ctest --rerun-failed -V
 - cd ..
 
 before_deploy:
