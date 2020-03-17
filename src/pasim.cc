@@ -333,6 +333,12 @@ void disable_line_buffering()
 
 int main(int argc, char **argv)
 {
+  // the UART simulation may invoke cin.rdbuf()->in_avail(), which does not work
+  // properly when cin is synced with stdio. we thus disable it here, since we
+  // are not using stdio anyway.
+  disable_line_buffering();
+  std::cin.sync_with_stdio(false);
+  
   // define command-line options
   boost::program_options::options_description generic_options(
     "Generic options:\n for memory/cache sizes the following units are allowed:"

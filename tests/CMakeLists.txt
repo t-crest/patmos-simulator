@@ -163,13 +163,29 @@ macro (test_dsim num expr)
 endmacro (test_dsim)
 
 macro (test_io_sim num expr)
-  ADD_TEST(sim-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 --in ${PROJECT_SOURCE_DIR}/tests/test${num}.in ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
-  SET_TESTS_PROPERTIES(sim-test-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
+  # Test input to program through '--in' command line argument
+  ADD_TEST(sim-test-file-input-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 --in ${PROJECT_SOURCE_DIR}/tests/test${num}.in ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
+  SET_TESTS_PROPERTIES(sim-test-file-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
+  # Test input to program through stdin pipe to pasim  
+  ADD_TEST(sim-test-stdin-input-${num} ${CMAKE_COMMAND}
+    -DPASIM=${CMAKE_BINARY_DIR}/src/pasim
+	-DTEST_BIN=${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin
+	-DINPUT_FILE=${PROJECT_SOURCE_DIR}/tests/test${num}.in
+	-P ${CMAKE_CURRENT_SOURCE_DIR}/sim-test-stdin-input-cmd.cmake)
+  SET_TESTS_PROPERTIES(sim-test-stdin-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
 endmacro (test_io_sim)
 
 macro (test_elf_io_sim num expr)
-  ADD_TEST(sim-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 --in ${PROJECT_SOURCE_DIR}/tests/test${num}.in ${PROJECT_SOURCE_DIR}/tests/test${num}.elf)
-  SET_TESTS_PROPERTIES(sim-test-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr})
+  # Test input to program through '--in' command line argument
+  ADD_TEST(sim-test-file-input-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 --in ${PROJECT_SOURCE_DIR}/tests/test${num}.in ${PROJECT_SOURCE_DIR}/tests/test${num}.elf)
+  SET_TESTS_PROPERTIES(sim-test-file-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr})
+  # Test input to program through stdin pipe to pasim
+  ADD_TEST(sim-test-stdin-input-${num} ${CMAKE_COMMAND}
+    -DPASIM=${CMAKE_BINARY_DIR}/src/pasim
+	-DTEST_BIN=${PROJECT_SOURCE_DIR}/tests/test${num}.elf
+	-DINPUT_FILE=${PROJECT_SOURCE_DIR}/tests/test${num}.in
+	-P ${CMAKE_CURRENT_SOURCE_DIR}/sim-test-stdin-input-cmd.cmake)
+  SET_TESTS_PROPERTIES(sim-test-stdin-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr})
 endmacro (test_elf_io_sim)
 
 macro (test_sim_lp num expr)
