@@ -14,14 +14,15 @@ jobs:
       # We need GNU Tar instead of default BSD one for deployment
       - brew install gnu-tar
       - PATH="$(brew --prefix)/opt/gnu-tar/libexec/gnubin:$PATH"
+  allow_failures:
+    - os: osx
 
 script:
 - mkdir build
 - cd build
 - cmake ..
 - make
-- ctest
-- ctest --rerun-failed -V
+- ctest --output-on-failure
 - cd ..
 
 before_deploy:
@@ -39,4 +40,5 @@ deploy:
   on:
     tags: true
     repo: t-crest/patmos-simulator
+
 
