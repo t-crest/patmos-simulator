@@ -46,6 +46,7 @@ endif()
 
 # Find boost library
 include(FindBoost)
+set(Boost_USE_STATIC_LIBS ON)
 find_package( Boost 1.46.0 COMPONENTS program_options REQUIRED)
 
 # Find libelf
