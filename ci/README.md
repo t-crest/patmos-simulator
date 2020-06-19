@@ -1,5 +1,7 @@
-Continuous Integration scripts
+Continuous Integration Helpers
 ====================
+
+### `.sh` scripts
 
 These scripts are meant to be run by Travis-CI for testing and deploying the project binaries.
 However, they can also be used to build/test the project locally.
@@ -12,3 +14,6 @@ The scripts should be run in the following order:
 
 Running them in a different order or skipping any of them may result in errors.
 
+### `.yml` configs
+
+These are Travis CI configuration files that are loaded by it during tests.
