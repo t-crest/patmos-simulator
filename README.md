@@ -25,12 +25,18 @@ usage: `pasim <binary stream> <trace output>`
 
 ## Installation
 
+Supported Platforms:
+
+- Ubuntu 16, 18
+- MacOs
+
 Prebuilt binaries can be found [here](https://github.com/t-crest/patmos-simulator/releases). 
 
 1. Download the latest release tarball for your machine.
-2. Extact the tarball in your T-CREST installation folder as-is (I.e. use the `extract here` option).
-3. Ensure your T-CREST installation folder is on your PATH.
-4. Done.
+1. Extact the tarball in your T-CREST installation folder as-is (`tar -xvf patmos-simulator.tar.gz`).
+1. Ensure your T-CREST installation folder is on your PATH.
+1. If on MacOs, to use the tools you need to have Boost's `program_options` package installed using version 1.46 or above.
+1. Done.
 
 To build the simulator from source, see the [developer instructions](#anch-developer) below.
 
