@@ -33,7 +33,7 @@ jobs:
       # We need GNU Tar instead of default BSD one for deployment
       - brew install gnu-tar
       - PATH="$(brew --prefix)/opt/gnu-tar/libexec/gnubin:$PATH"
-      after_success: touch build/osx_build_success
+      before_cache: touch build/osx_build_$TRAVIS_TEST_RESULT
       
     - stage: "Test"
     # Bionic
@@ -41,7 +41,7 @@ jobs:
     # MacOs
     - script: ci/test.sh
       os: osx
-      after_success: touch build/osx_test_success
+      before_cache: touch build/osx_test_$TRAVIS_TEST_RESULT
     
     - stage: "Deploy"
     # Bionic
@@ -63,7 +63,7 @@ jobs:
       script: skip
       # We need GNU Tar instead of default BSD one for deployment
       before_script:
-      - test -f build/osx_build_success
+      - test -f build/osx_build_0 # Ensure build succeeded
       - brew install gnu-tar
       - PATH="$(brew --prefix)/opt/gnu-tar/libexec/gnubin:$PATH"
       deploy:
