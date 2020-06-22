@@ -10,6 +10,7 @@ cache:
 jobs:
   allow_failures:
   - os: osx
+    stage: "Test"
   include:
     - stage: "Clear cache"
     # Bionic
@@ -32,6 +33,7 @@ jobs:
       # We need GNU Tar instead of default BSD one for deployment
       - brew install gnu-tar
       - PATH="$(brew --prefix)/opt/gnu-tar/libexec/gnubin:$PATH"
+      after_success: touch build/osx_build_success
       
     - stage: "Test"
     # Bionic
@@ -61,7 +63,7 @@ jobs:
       script: skip
       # We need GNU Tar instead of default BSD one for deployment
       before_script:
-      - test -f build/osx_test_success
+      - test -f build/osx_build_success
       - brew install gnu-tar
       - PATH="$(brew --prefix)/opt/gnu-tar/libexec/gnubin:$PATH"
       deploy:
