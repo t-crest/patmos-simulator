@@ -83,6 +83,15 @@ set( PACKAGE_TAR "${PROJECT_NAME}-${TARGET_TRIPLE}.tar")
 set( PACKAGE_TAR_GZ "${PACKAGE_TAR}.gz")
 set( PACKAGE_INFO_FILE "${PROJECT_NAME}-info.yml")
 set( PACKAGE_BINARIES "src/pasim" "src/pacheck" "src/paasm" "src/padasm" )
+if (APPLE) 
+	# Mac usually has BSD tar
+	set(TRANSFORM_FLAG "-s")
+	set(TRANSFORM_STRING "/^src/bin/")
+else()
+	# By default, assume using GNU tar.
+	set(TRANSFORM_FLAG "--transform")
+	set(TRANSFORM_STRING "s,^src,bin,")
+endif()
 # Build release tarball containing binaries and metadata
 add_custom_command(
 	OUTPUT ${PACKAGE_TAR_GZ} 
@@ -92,8 +101,8 @@ add_custom_command(
 	# Package binaries
 	COMMAND tar -cf ${PACKAGE_TAR} 
 		# Rename "src/*" to "bin/*"
-		--transform 's,^src,bin,' ${PACKAGE_BINARIES}
-
+		${TRANSFORM_FLAG} ${TRANSFORM_STRING} ${PACKAGE_BINARIES}
+	
 	# Build YAML info file
 	COMMAND ${CMAKE_COMMAND} -E echo "name: ${PROJECT_NAME}" > ${PACKAGE_INFO_FILE}
 	COMMAND ${CMAKE_COMMAND} -E echo "target: ${TARGET_TRIPLE}" >> ${PACKAGE_INFO_FILE}
