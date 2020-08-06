@@ -173,6 +173,14 @@ macro (test_io_sim num expr)
 	-DINPUT_FILE=${PROJECT_SOURCE_DIR}/tests/test${num}.in
 	-P ${CMAKE_CURRENT_SOURCE_DIR}/sim-test-stdin-input-cmd.cmake)
   SET_TESTS_PROPERTIES(sim-test-stdin-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
+  # Test input to program through interactive stdin  
+  ADD_TEST(sim-test-interactive-stdin-input-${num} expect 
+	${PROJECT_SOURCE_DIR}/tests/sim-test-interactive-stdin-input.sh
+	-- 
+	${CMAKE_BINARY_DIR}/src/pasim 
+	${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin
+	${PROJECT_SOURCE_DIR}/tests/test${num}.in)
+  SET_TESTS_PROPERTIES(sim-test-interactive-stdin-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
 endmacro (test_io_sim)
 
 macro (test_elf_io_sim num expr)
