@@ -71,7 +71,7 @@ Errors : 0")
 test_asm(22 "Emitted: 64 bytes
 Errors : 0")
 
-test_asm(23 "Emitted: 68 bytes
+test_asm(23 "Emitted: 56 bytes
 Errors : 0")
 
 test_asm(25 "Emitted: 36 bytes
@@ -166,7 +166,7 @@ macro (test_io_sim num expr)
   # Test input to program through '--in' command line argument
   ADD_TEST(sim-test-file-input-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 --in ${PROJECT_SOURCE_DIR}/tests/test${num}.in ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
   SET_TESTS_PROPERTIES(sim-test-file-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
-  # Test input to program through stdin pipe to pasim  
+  # Test input to program through piped stdin  
   ADD_TEST(sim-test-stdin-input-${num} ${CMAKE_COMMAND}
     -DPASIM=${CMAKE_BINARY_DIR}/src/pasim
 	-DTEST_BIN=${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin
