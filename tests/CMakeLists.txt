@@ -252,7 +252,7 @@ test_sim(19 "r1 : 00000007")
 test_sim(21 "BASE: 00000004   PC : 0000005c.*
 .*r1 : 0000003c")
 
-test_io_sim(22 "r1 : 000000fb")
+test_io_sim(22 "r1 : 00000041")
 
 test_sim(23 "!
 .*

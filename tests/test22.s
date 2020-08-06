@@ -1,7 +1,7 @@
 #
 # Continualy checks the status flag of the UART until
 # it signals there is some input, which is then loaded into r1.
-# Expected Result: r1 = 0xfb
+# Expected Result: r1 = 0x41
 #
 
                 .word   64;
