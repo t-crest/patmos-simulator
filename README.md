@@ -260,6 +260,7 @@ Requirements:
 * boost    1.46 or above
 * C++14    GCC or clang  
 * libelf   0.8.13 or above
+* expect   8.45 or above
 
 To build the simulator, run the following commands in the root directory 
 (assuming `build` is chosen as the build directory):

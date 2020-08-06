@@ -35,10 +35,15 @@ jobs:
     - stage: "Test"
     # Bionic
       script: ci/test.sh
+      before_script:
+      - sudo apt-get update -qq
+      - sudo apt-get install expect
     # MacOs
     - script: ci/test.sh
       os: osx
       before_cache: touch build/osx_test_$TRAVIS_TEST_RESULT
+      before_script:
+      - brew install expect
     
     - stage: "Deploy"
     # Bionic
