@@ -27,7 +27,6 @@ jobs:
       os: osx
       before_script:
       - brew install libelf
-      before_cache: touch build/osx_build_$TRAVIS_TEST_RESULT
       
     - stage: "Test"
     # Bionic
@@ -60,8 +59,6 @@ jobs:
     - os: osx
       if: tag IS present
       script: skip
-      before_script:
-      - test -f build/osx_build_0 # Ensure build succeeded
       deploy:
       - provider: releases
         api_key:
