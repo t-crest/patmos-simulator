@@ -8,9 +8,6 @@ cache:
   - build/
 
 jobs:
-  allow_failures:
-  - os: osx
-    stage: "Test"
   include:
     - stage: "Clear cache"
     # Bionic
@@ -30,15 +27,19 @@ jobs:
       os: osx
       before_script:
       - brew install libelf
-      before_cache: touch build/osx_build_$TRAVIS_TEST_RESULT
       
     - stage: "Test"
     # Bionic
       script: ci/test.sh
+      before_script:
+      - sudo apt-get update -qq
+      - sudo apt-get install expect
     # MacOs
     - script: ci/test.sh
       os: osx
       before_cache: touch build/osx_test_$TRAVIS_TEST_RESULT
+      before_script:
+      - brew install expect
     
     - stage: "Deploy"
     # Bionic
@@ -58,8 +59,6 @@ jobs:
     - os: osx
       if: tag IS present
       script: skip
-      before_script:
-      - test -f build/osx_build_0 # Ensure build succeeded
       deploy:
       - provider: releases
         api_key:

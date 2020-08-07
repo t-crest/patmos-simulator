@@ -60,6 +60,21 @@ if (NOT ELF_INCLUDE_DIRS)
   message(FATAL_ERROR "libelf headers not found.")
 endif()
 
+# Find 'expect' command required for testing
+find_program(FOUND_EXPECT expect DOC "Required for testing.")
+if (NOT FOUND_EXPECT) 
+	message(WARNING 
+	"The program 'expect' is not istalled.\n"
+	"Some tests require this program to be installed and will fail if it is absent.\n"
+	"However, you can safely build this project without 'expect' being present, as along as you don't need to test it.\n"
+	"On ubuntu, you should be able to install it using:
+	sudo apt-get install expect\n"
+	"On MacOs, you should be able to install it using: 
+	brew install expect\n"
+	"See more: https://linux.die.net/man/1/expect")
+endif()
+
+
 include_directories(include ./ ${Boost_INCLUDE_DIRS} ${ELF_INCLUDE_DIRS})
 
 # make sure the boost templates compile

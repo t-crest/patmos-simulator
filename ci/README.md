@@ -13,7 +13,3 @@ The scripts should be run in the following order:
 - `test`
 
 Running them in a different order or skipping any of them may result in errors.
-
-### `.yml` configs
-
-These are Travis CI configuration files that are loaded by it during tests.

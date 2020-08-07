@@ -40,6 +40,7 @@
 #include <istream>
 #include <ostream>
 #include <cstdio>
+#include <sys/ioctl.h>
 
 #include "memory-map.h"
 #include "exception.h"
@@ -88,10 +89,25 @@ namespace patmos
       // when the input stream reaches the end-of-file (EOF), signal a parity
       // error, i.e., PAE = 1.
       *value = (1 << TRE);
-      if (In_stream.rdbuf()->in_avail())
+      bool any_input;
+      if (IsTTY) {
+        // If stream is interactive use ioctl to check
+        // if there is more input without blocking
+        auto n = 0;
+        auto res = ioctl(STDIN_FILENO, FIONREAD, &n);
+        assert(res == 0);
+        any_input = n>0;
+      } else {
+        // When not interactive, simply peek for next char.
+        // When peek returns EOF the file or pipe is empty
+        any_input = EOF != In_stream.peek();
+      }
+
+      if (any_input) {
         *value |= (1 << DAV);
-      else
+      } else {
         *value |= (1 << PAE);
+      }
 
       return true;
     }
