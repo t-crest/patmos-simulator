@@ -8,9 +8,6 @@ cache:
   - build/
 
 jobs:
-  allow_failures:
-  - os: osx
-    stage: "Test"
   include:
     - stage: "Clear cache"
     # Bionic
