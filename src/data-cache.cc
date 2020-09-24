@@ -346,6 +346,8 @@ void set_assoc_data_cache_t<LRU_REPLACEMENT>::flush_cache()
   }
 }
 
-// Explicit instantiation of template class for linking.
-template class set_assoc_data_cache_t<false>;
-template class set_assoc_data_cache_t<true>;
+namespace patmos {
+  // Explicit instantiation of template class for linking.
+  template class set_assoc_data_cache_t<false>;
+  template class set_assoc_data_cache_t<true>;
+}
