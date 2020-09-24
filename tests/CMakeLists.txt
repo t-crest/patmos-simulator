@@ -148,6 +148,8 @@ Errors : 0")
 test_asm(51 "Emitted: 72 bytes
 Errors : 0")
 
+test_asm(52 "Emitted: 40 bytes
+Errors : 0")
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -316,3 +318,5 @@ test_sim_scba(50 "Align .*spill.*:          2           2
    Align .*free.*:          4           4")
 
 test_sim(51 "r1 : 00400000   r2 : 003ffffb   r3 : 00000005")
+
+test_sim(52 "Cycle ([0-9]|[a-f])*: Illegal instruction at ([0-9]|[a-f])*: Use of load result without delay slot!")
