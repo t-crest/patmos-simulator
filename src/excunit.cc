@@ -260,24 +260,6 @@ namespace patmos
     }
   }
 
-  void excunit_t::illegal(uword_t iw)
-  {
-    if (may_fire(ET_ILLEGAL_OPERATION)) {
-      fire_exception(ET_ILLEGAL_OPERATION);
-    } else {
-      simulation_exception_t::illegal(iw);
-    }
-  }
-
-  void excunit_t::illegal(std::string msg)
-  {
-    if (may_fire(ET_ILLEGAL_OPERATION)) {
-      fire_exception(ET_ILLEGAL_OPERATION);
-    } else {
-      simulation_exception_t::illegal(msg);
-    }
-  }
-
   void excunit_t::unmapped(uword_t address)
   {
     if (may_fire(ET_ILLEGAL_ADDRESS)) {
