@@ -142,7 +142,14 @@ namespace patmos
 
       // simulate the respective pipeline stage of the instruction
       if (f) {
-        (Pipeline[pst][i].*f)(*this);
+        try {
+          (Pipeline[pst][i].*f)(*this);
+        }
+        catch (patmos::simulation_exception_t e)
+        {
+          e.set_offending_instruction(Pipeline[pst][i]);
+          throw e;
+        }
       }
     }
 
@@ -388,7 +395,9 @@ namespace patmos
                       // The previous load instruction is being executed
                       PRR.get(Pipeline[SMW][0].Pred).get())
                 {
-                  simulation_exception_t::illegal("Use of load result without delay slot!");
+                  simulation_exception_t::illegal("Use of load result without delay slot!",
+                    Pipeline[SEX][j]
+                  );
                 }
               }
             }
