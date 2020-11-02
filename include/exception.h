@@ -39,6 +39,7 @@
 
 #include "basic-types.h"
 #include "symbol.h"
+#include "instruction.h"
 
 #include <cassert>
 #include <sstream>
@@ -101,18 +102,25 @@ namespace patmos
     /// An optional error message.
     std::string Message;
 
+    /// The instruction that caused this error.
+    /// Optional, if not present the instruction is NULL
+    /// i.e. Offending_instruction.I == NULL
+    instruction_data_t Offending_instruction;
+
     /// Construction a simulation exception.
     /// @param kind The kind of the simulation exception.
     /// @param info Additional information on the simulation exception, e.g.,
     /// the address of an unmapped memory access, et cetera.
     simulation_exception_t(kind_t kind, uword_t info, uword_t pc = 0,
                            unsigned int cycle = 0) :
-        Kind(kind), Info(info), PC(pc), Cycle(cycle), Message("")
+        Kind(kind), Info(info), PC(pc), Cycle(cycle), Message(""),
+        Offending_instruction()
     {}
 
     simulation_exception_t(kind_t kind, std::string msg, uword_t pc = 0,
                            unsigned int cycle = 0) :
-        Kind(kind), Info(0), PC(pc), Cycle(cycle), Message(msg)
+        Kind(kind), Info(0), PC(pc), Cycle(cycle), Message(msg),
+        Offending_instruction()
     {}
 
   public:
@@ -120,6 +128,13 @@ namespace patmos
     {
       Cycle = cycle;
       PC = pc;
+    }
+
+    /// Specify which instruction caused this exception.
+    /// @param inst Caused the error this exception represents.
+    void set_offending_instruction(instruction_data_t inst)
+    {
+      Offending_instruction = inst;
     }
 
     /// Return the kind of the simulation exception.
@@ -178,8 +193,16 @@ namespace patmos
           return "Unknown simulation error: " + get_message() + "\n";
       }
       std::stringstream ss;
-      ss << boost::format("Cycle %1%: %2% at %3$08x%4%: %5%\n")
-                    % Cycle % kind_msg % PC % sym.find(PC) % get_message();
+      ss << boost::format("[Error] %1%: %2%\n") % kind_msg % get_message();
+      if (Offending_instruction.I) {
+        ss << boost::format("\n%1$08x%2%:        ") 
+                % Offending_instruction.Address 
+                % sym.find(Offending_instruction.Address);
+        Offending_instruction.I->print(ss, Offending_instruction, sym);
+        ss << "\n\n";
+      }
+      ss << boost::format("Cycle : %1%, PC : %2$08x%3%\n")
+                    % Cycle % PC % sym.find(PC);
       return ss.str();
     }
 
@@ -214,10 +237,13 @@ namespace patmos
     }
 
     /// Throw an illegal instruction simulation exception.
-    /// @param msg The error message
-    static void illegal(std::string msg) __attribute__ ((noreturn))
+    /// @param msg The error message.
+    /// @param instr The illegal instruction.
+    static void illegal(std::string msg, instruction_data_t instr) __attribute__ ((noreturn))
     {
-      throw simulation_exception_t(ILLEGAL, msg);
+      auto e = simulation_exception_t(ILLEGAL, msg);
+      e.set_offending_instruction(instr);
+      throw e;
     }
 
     /// Throw an unmapped address simulation exception.

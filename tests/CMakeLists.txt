@@ -241,13 +241,13 @@ test_sim(13 "BASE: 00000004   PC : 0000002c.*
 
 test_sim(14 "r0 : 00000000   r1 : 0283f181   r2 : 0283f181   r3 : 00000283   r4 : ffffff83   r5 : 00000283   r6 : 00000083")
 
-test_sim(15 "Unmapped memory access at 00000014: fffffffc")
+test_sim(15 "\\\\\\[Error\\\\\\] Unmapped memory access: fffffffc(.)*(0)*8:( )*lwm r1 = \\\\\\[r1 \\\\\\+ 0\\\\\\](.)*PC : 00000014")
 
-test_sim(16 "Stack size exceeded at 00000020")
+test_sim(16 "\\\\\\[Error\\\\\\] Stack size exceeded(.)*(0)*14:( )*lws r1 = \\\\\\[r0 \\\\\\+ 5\\\\\\](.)*PC : 00000020")
 
-test_sim(17 "Stack size exceeded at 00000024")
+test_sim(17 "\\\\\\[Error\\\\\\] Stack size exceeded(.)*(0)*18:( )*lws r1 = \\\\\\[r1 \\\\\\+ 0\\\\\\](.)*PC : 00000024")
 
-test_sim(18 "Stack size exceeded at 0000000c")
+test_sim(18 "\\\\\\[Error\\\\\\] Stack size exceeded(.)*(0)*4:( )*sres 4(.)*PC : 0000000c")
 
 test_sim(19 "r1 : 00000007")
 
@@ -319,4 +319,4 @@ test_sim_scba(50 "Align .*spill.*:          2           2
 
 test_sim(51 "r1 : 00400000   r2 : 003ffffb   r3 : 00000005")
 
-test_sim(52 "Cycle ([0-9]|[a-f])*: Illegal instruction at ([0-9]|[a-f])*: Use of load result without delay slot!")
+test_sim(52 "\\\\\\[Error\\\\\\] Illegal instruction: Use of load result without delay slot!(.)*(0)*14:( )*addil r8 = r3, 1")
