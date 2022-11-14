@@ -1,0 +1,72 @@
+name: Simulator CI
+
+on:
+  push: 
+    branches: '**'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-**'
+  pull_request:
+  schedule:
+    # Run every monday at 1:00 AM
+    - cron: '00 1 * * MON'
+
+env:
+  CARGO_TERM_COLOR: always
+  J: -j2
+  
+jobs:
+  test:
+    name: Test
+    runs-on:  ${{matrix.platform}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: 
+          - platform: ubuntu-22.04
+            cc: gcc
+            cxx: g++
+          - platform: ubuntu-20.04
+            cc: gcc
+            cxx: g++
+          - platform: macos-12
+            cc: clang
+            cxx: clang++
+          - platform: macos-11
+            cc: clang
+            cxx: clang++
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-package 
+      - name: Test
+        working-directory: build
+        shell: bash
+        run: ctest $J --verbose --output-on-failure
+  release:
+    name: Release
+    runs-on: ${{matrix.platform}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: 
+          - platform: ubuntu-20.04
+            cc: gcc
+            cxx: g++
+          - platform: macos-11
+            cc: clang
+            cxx: clang++
+    # Run after the test jobs finish      
+    needs: [test]
+    # Run only if this was triggered by a tag
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-package 
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: build/patmos-simulator-*.tar.gz
+      
+      
+          
+        
+        

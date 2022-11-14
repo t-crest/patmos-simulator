@@ -1,0 +1,29 @@
+name: 'Build Package'
+description: 'Builds all binaries and packages them'
+    
+runs:
+  using: "composite"
+  steps: 
+    - name: Install dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install libboost-dev libboost-program-options-dev libelf-dev expect
+    - name: Install dependencies (MacOs)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install libelf boost expect
+    - name: Setup CMake
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. CMAKE_BUILD_TYPE=Release
+    - name: Build
+      working-directory: build
+      shell: bash
+      run: make $J Package
+    
+    

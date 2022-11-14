@@ -27,7 +27,7 @@ usage: `pasim <binary stream> <trace output>`
 
 Supported Platforms:
 
-- Ubuntu 16, 18
+- Ubuntu 18 or higher
 - MacOs
 
 Prebuilt binaries can be found [here](https://github.com/t-crest/patmos-simulator/releases). 
@@ -286,7 +286,7 @@ Requirements:
 
 To package binaries for release, run the following command in the build directory:
 ```
-  make -j box
+  make -j Package
 ```
 
 It will make a tarball with the name `patmos-simulator-*.tar.gz` (where `*` is the build target)
@@ -297,7 +297,7 @@ that includes the following:
 
 #### Deployment
 
-Travis-CI manages deploying a new release of these tools to Github Releases.
+Github Actions (CI) manages deploying a new release of these tools to Github Releases.
 
 To trigger a release, you simply have to push a tag with the version number of the new release:
 

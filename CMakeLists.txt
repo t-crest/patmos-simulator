@@ -78,7 +78,6 @@ if (NOT FOUND_EXPECT)
 	"See more: https://linux.die.net/man/1/expect")
 endif()
 
-
 include_directories(include ./ ${Boost_INCLUDE_DIRS} ${ELF_INCLUDE_DIRS})
 
 # make sure the boost templates compile
@@ -96,37 +95,45 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 # Save the target triple in a variable
-execute_process( COMMAND gcc -dumpmachine OUTPUT_VARIABLE TARGET_TRIPLE OUTPUT_STRIP_TRAILING_WHITESPACE )
+execute_process( COMMAND gcc -dumpmachine OUTPUT_VARIABLE DUMP_MACHINE OUTPUT_STRIP_TRAILING_WHITESPACE )
+message(WARNING "Machine Triple: ${DUMP_MACHINE}")
+if (${DUMP_MACHINE} MATCHES "x86_64-linux-gnu")
+	set( TARGET_TRIPLE "x86_64-linux-gnu")
+elseif(${DUMP_MACHINE} MATCHES "x86_64-apple-darwin.*")
+	set( TARGET_TRIPLE "x86_64-apple-darwin")
+else()
+	message(FATAL_ERROR "Unsupported platform for packaging")
+endif()
 set( PROJECT_NAME "patmos-simulator")
 set( PACKAGE_TAR "${PROJECT_NAME}-${TARGET_TRIPLE}.tar")
 set( PACKAGE_TAR_GZ "${PACKAGE_TAR}.gz")
 set( PACKAGE_INFO_FILE "${PROJECT_NAME}-info.yml")
-set( PACKAGE_BINARIES "src/pasim" "src/pacheck" "src/paasm" "src/padasm" )
-if (APPLE) 
-	# Mac usually has BSD tar
-	set(TRANSFORM_FLAG "-s")
-	set(TRANSFORM_STRING "/^src/bin/")
-else()
-	# By default, assume using GNU tar.
-	set(TRANSFORM_FLAG "--transform")
-	set(TRANSFORM_STRING "s,^src,bin,")
-endif()
+add_custom_target(PackageDir
+    "${CMAKE_COMMAND}" -E make_directory 
+	"bin"
+)
+set( PACKAGE_BINARIES "bin/pasim" "bin/pacheck" "bin/paasm" "bin/padasm" )
+
 # Build release tarball containing binaries and metadata
 add_custom_command(
 	OUTPUT ${PACKAGE_TAR_GZ} 
 		# We add all generated files to the list of outputs to ensure that cleaning will remove them.
-		${PACKAGE_TAR} ${PACKAGE_INFO_FILE}
+		${PACKAGE_TAR} ${PACKAGE_INFO_FILE} ${PACKAGE_BINARIES}
+	
+	# Copy binaries to bin/ directory, so we don't need to rename their paths using tar
+	COMMAND cp "src/pasim" "bin/"
+	COMMAND cp "src/pacheck" "bin/"
+	COMMAND cp "src/paasm" "bin/"
+	COMMAND cp "src/padasm" "bin/"
 	
 	# Package binaries
-	COMMAND tar -cf ${PACKAGE_TAR} 
-		# Rename "src/*" to "bin/*"
-		${TRANSFORM_FLAG} ${TRANSFORM_STRING} ${PACKAGE_BINARIES}
+	COMMAND tar -cf ${PACKAGE_TAR} ${PACKAGE_BINARIES}
 	
 	# Build YAML info file
 	COMMAND ${CMAKE_COMMAND} -E echo "name: ${PROJECT_NAME}" > ${PACKAGE_INFO_FILE}
 	COMMAND ${CMAKE_COMMAND} -E echo "target: ${TARGET_TRIPLE}" >> ${PACKAGE_INFO_FILE}
 	COMMAND ${CMAKE_COMMAND} -E echo_append "version: " >> ${PACKAGE_INFO_FILE}
-	COMMAND git describe --tags >> ${PACKAGE_INFO_FILE}
+	COMMAND git describe --tags --always >> ${PACKAGE_INFO_FILE}
 	COMMAND ${CMAKE_COMMAND} -E echo_append "commit: " >> ${PACKAGE_INFO_FILE}
 	COMMAND git rev-parse HEAD >> ${PACKAGE_INFO_FILE}
 	COMMAND ${CMAKE_COMMAND} -E echo "files:" >> ${PACKAGE_INFO_FILE}
@@ -138,7 +145,7 @@ add_custom_command(
 	# Compress the tar
 	COMMAND gzip -9 < ${PACKAGE_TAR} > ${PACKAGE_TAR_GZ}
 	
-	DEPENDS ${PACKAGE_BINARIES}
+	DEPENDS PackageDir "src/pasim" "src/pacheck" "src/paasm" "src/padasm"
 )
 # Rename release tarball target to something better.
-add_custom_target(box DEPENDS ${PACKAGE_TAR_GZ})
+add_custom_target(Package DEPENDS ${PACKAGE_TAR_GZ})
