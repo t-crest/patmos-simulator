@@ -32,9 +32,6 @@ jobs:
           - platform: macos-12
             cc: clang
             cxx: clang++
-          - platform: macos-11
-            cc: clang
-            cxx: clang++
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/build-package 
@@ -52,7 +49,7 @@ jobs:
           - platform: ubuntu-20.04
             cc: gcc
             cxx: g++
-          - platform: macos-11
+          - platform: macos-12
             cc: clang
             cxx: clang++
     # Run after the test jobs finish      
@@ -65,8 +62,3 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           files: build/patmos-simulator-*.tar.gz
-      
-      
-          
-        
-        
