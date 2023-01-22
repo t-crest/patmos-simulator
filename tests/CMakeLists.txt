@@ -150,6 +150,7 @@ Errors : 0")
 
 test_asm(52 "Emitted: 40 bytes
 Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -197,6 +198,12 @@ macro (test_elf_io_sim num expr)
 	-P ${CMAKE_CURRENT_SOURCE_DIR}/sim-test-stdin-input-cmd.cmake)
   SET_TESTS_PROPERTIES(sim-test-stdin-input-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr})
 endmacro (test_elf_io_sim)
+
+macro (test_elf_exit_sim num expr)
+  # Test elf programs exit code
+  ADD_TEST(sim-exit-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 -o - ${PROJECT_SOURCE_DIR}/tests/test${num}.elf)
+  SET_TESTS_PROPERTIES(sim-exit-test-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr})
+endmacro (test_elf_exit_sim)
 
 macro (test_sim_lp num expr)
   ADD_TEST(sim-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V -S lblock --maxc 40000 ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
@@ -320,3 +327,8 @@ test_sim_scba(50 "Align .*spill.*:          2           2
 test_sim(51 "r1 : 00400000   r2 : 003ffffb   r3 : 00000005")
 
 test_sim(52 "\\\\\\[Error\\\\\\] Illegal instruction: Use of load result without delay slot!(.)*(0)*14:( )*addil r8 = r3, 1")
+
+test_elf_exit_sim(53 "r1 : 00000000")
+
+test_elf_exit_sim(54 "r1 : 0000007b   r2 : 000001c8")
+

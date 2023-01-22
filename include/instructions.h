@@ -2075,9 +2075,16 @@ namespace patmos
       push_dbgstack(s, ops, ops.DR_Pred, s.BASE, ret_pc, ops.EX_Address);
       
       fetch_and_dispatch(s, ops, ops.DR_Pred, ops.EX_Address, ops.EX_Address);
-      if (!ops.OPS.CFLi.D && ops.DR_Pred && !s.is_stalling(SMW))
+      if (!ops.OPS.CFLi.D && ops.DR_Pred)
       {
         s.pipeline_flush(SMW);
+
+        if (!ops.OPS.CFLi.D){
+          // The above flush resets the execution stage's.
+          // We reassign it here in case we are stalling, such that the repeated
+          // calls to this function will get the right "ret_pc" every time.
+          s.Pipeline[SEX][0].Address = ret_pc;
+        }
       }
     }
     
