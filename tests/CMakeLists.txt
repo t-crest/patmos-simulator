@@ -157,6 +157,15 @@ Errors : 0")
 test_asm(56 "Emitted: 52 bytes
 Errors : 0")
 
+test_asm(57 "Emitted: 84 bytes
+Errors : 0")
+
+test_asm(58 "Emitted: 52 bytes
+Errors : 0")
+
+test_asm(59 "Emitted: 56 bytes
+Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -349,3 +358,10 @@ test_sim_arg(55 "--permissive-dual-issue" "r3 : 0000007b   r4 : 000001c8")
 
 test_sim_arg(56 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled loads.*\\\\\\( p1\\\\\\) lwm r3 = \\\\\\[r1 \\\\\\+ 0\\\\\\]")
 
+test_sim(57 "\\\\\\[Error\\\\\\] Illegal instruction: 92c61180.*PC : 00000024")
+
+test_sim_arg(57 "--permissive-dual-issue" "r5 : 0000000c   r6 : 00000022")
+
+test_sim_arg(58 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled stores.*\\\\\\( p1\\\\\\) swm \\\\\\[r1 \\\\\\+ 0\\\\\\] = r3")
+
+test_sim_arg(59 "--permissive-dual-issue" "r4 : 0000007b   r5 : 000001c8")
