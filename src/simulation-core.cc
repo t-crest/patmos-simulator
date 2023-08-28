@@ -128,12 +128,17 @@ namespace patmos
 
 	// Check permissive instructions
     if( Use_permissive_dual_issue && f == &instruction_data_t::DR) {
-      auto pred0 = PRR.get(Pipeline[pst][0].Pred).get();
-      auto pred1 = PRR.get(Pipeline[pst][1].Pred).get();
+      auto &pipe_instr0 = Pipeline[pst][0];
+      auto &pipe_instr1 = Pipeline[pst][1];
+      auto pred0 = PRR.get(pipe_instr0.Pred).get();
+      auto pred1 = PRR.get(pipe_instr1.Pred).get();
 
       if(pred0 && pred1) {
-        if(Pipeline[pst][0].I->is_load() && Pipeline[pst][1].I->is_load()) {
+        if(pipe_instr0.I->is_load() && pipe_instr1.I->is_load()) {
           patmos::simulation_exception_t::illegal("Two simultaneously enabled loads", Pipeline[pst][0]);
+        }
+        if(pipe_instr0.I->is_store() && pipe_instr1.I->is_store()) {
+          patmos::simulation_exception_t::illegal("Two simultaneously enabled stores", Pipeline[pst][0]);
         }
       }
     }

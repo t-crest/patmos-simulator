@@ -691,7 +691,7 @@ namespace patmos
   stt_format_t::stt_format_t(const instruction_t &instruction, word_t opcode,
                              bool is_stack) :
       binary_format_t(instruction, 0x7FE0000, insert(0x2C00000, 17, 5, opcode),
-                      is_stack ? 3 : 1)
+                      is_stack ? 3 : 1, false, 3)
   {
   }
 

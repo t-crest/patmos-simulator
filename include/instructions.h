@@ -1560,7 +1560,7 @@ namespace patmos
   public:
     i_stt_t() { reset_stats(); }
 
-    virtual bool is_store() { return true; }
+    virtual bool is_store() const { return true; }
     
     virtual GPR_e get_src1_reg(const instruction_data_t &ops) const { 
       return ops.OPS.STT.Ra;
