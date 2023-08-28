@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     // free streams
     free_stream(in);
 
-    decoder_t decoder;
+    decoder_t decoder(false);
     instruction_checker_t instruction_checker;
 
     int retcode = 0;

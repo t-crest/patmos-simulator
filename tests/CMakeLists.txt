@@ -151,6 +151,12 @@ Errors : 0")
 test_asm(52 "Emitted: 40 bytes
 Errors : 0")
 
+test_asm(55 "Emitted: 60 bytes
+Errors : 0")
+
+test_asm(56 "Emitted: 52 bytes
+Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -158,6 +164,11 @@ Errors : 0")
 macro (test_sim num expr)
   ADD_TEST(sim-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 -o - ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
   SET_TESTS_PROPERTIES(sim-test-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
+endmacro (test_sim)
+
+macro (test_sim_arg num args expr)
+  ADD_TEST(sim-test-arg-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 -o - ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin ${args})
+  SET_TESTS_PROPERTIES(sim-test-arg-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
 endmacro (test_sim)
 
 macro (test_dsim num expr)
@@ -331,4 +342,10 @@ test_sim(52 "\\\\\\[Error\\\\\\] Illegal instruction: Use of load result without
 test_elf_exit_sim(53 "r1 : 00000000")
 
 test_elf_exit_sim(54 "r1 : 0000007b   r2 : 000001c8")
+
+test_sim(55 "\\\\\\[Error\\\\\\] Illegal instruction: 8a861180.*PC : 00000014")
+
+test_sim_arg(55 "--permissive-dual-issue" "r3 : 0000007b   r4 : 000001c8")
+
+test_sim_arg(56 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled loads.*\\\\\\( p1\\\\\\) lwm r3 = \\\\\\[r1 \\\\\\+ 0\\\\\\]")
 

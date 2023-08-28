@@ -262,6 +262,11 @@ namespace patmos
     /// Profiling information for function profiling
     profiling_t Profiling;
 
+    /// Allow the use of loads, stores, and branch in the second issue slot
+    /// as long as only one of each is enabled per bundle. I.e. is two loads
+    /// are in the same slot, only one of them may be enabled.
+    bool Use_permissive_dual_issue;
+
     /// Print the internal register state of the simulator to an output stream
     /// (excluding memories and caches)
     /// @param os An output stream.
@@ -318,10 +323,12 @@ namespace patmos
     /// @param instr_cache The instruction cache to use during the simulation.
     /// @param stack_cache The stack cache to use during the simulation.
     /// @param symbols A mapping from addresses to symbols.
+    /// @param excunit
+    /// @param use_permissive_dual_issue Whether to use permissive dual issue
     simulator_t(unsigned int freq, memory_t &memory, memory_t &local_memory,
                 data_cache_t &data_cache, instr_cache_t &instr_cache,
                 stack_cache_t &stack_cache, symbol_map_t &symbols,
-                excunit_t &excunit);
+                excunit_t &excunit, bool use_permissive_dual_issue);
 
     // Destroy an instance of a Patms-core simulator
     ~simulator_t();

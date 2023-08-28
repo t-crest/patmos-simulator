@@ -81,7 +81,7 @@ public:
 
 int main(int argc, char **argv)
 {
-  patmos::decoder_t padasm;
+  patmos::decoder_t padasm(false);
   patmos::symbol_map_t symbols;
   patmos::section_list_t text;
 
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     patmos::loader_t *loader = patmos::create_loader(in);
     loader->load_symbols(symbols, text);
 
-    patmos::decoder_t decoder;
+    patmos::decoder_t decoder(false);
     instruction_printer_t printer(out);
 
     for (patmos::section_list_t::iterator t = text.begin(), te = text.end();
