@@ -57,7 +57,7 @@ namespace patmos
                            memory_t &local_memory, data_cache_t &data_cache,
                            instr_cache_t &instr_cache,
                            stack_cache_t &stack_cache, symbol_map_t &symbols,
-                           excunit_t &excunit)
+                           excunit_t &excunit, bool use_permissive_dual_issue)
     : Dbg_cnt_delay(0),
       Freq(freq), Cycle(0), Memory(memory), Local_memory(local_memory),
       Data_cache(data_cache), Instr_cache(instr_cache),
@@ -70,7 +70,7 @@ namespace patmos
       Flush_Cache_PC(std::numeric_limits<unsigned int>::max()),
       Stats_Start_Cycle(0),
       Traced_instructions(0),
-      Num_NOPs(0)
+      Num_NOPs(0), Use_permissive_dual_issue(use_permissive_dual_issue), Decoder(use_permissive_dual_issue)
   {
     // initialize the pipeline
     for(unsigned int i = 0; i < NUM_STAGES; i++)
@@ -124,6 +124,18 @@ namespace patmos
     if (debug)
     {
       debug_out << pst << " : ";
+    }
+
+	// Check permissive instructions
+    if( Use_permissive_dual_issue && f == &instruction_data_t::DR) {
+      auto pred0 = PRR.get(Pipeline[pst][0].Pred).get();
+      auto pred1 = PRR.get(Pipeline[pst][1].Pred).get();
+
+      if(pred0 && pred1) {
+        if(Pipeline[pst][0].I->is_load() && Pipeline[pst][1].I->is_load()) {
+          patmos::simulation_exception_t::illegal("Two simultaneously enabled loads", Pipeline[pst][0]);
+        }
+      }
     }
 
     // invoke simulation functions

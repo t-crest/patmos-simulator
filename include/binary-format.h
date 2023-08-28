@@ -72,6 +72,10 @@ namespace patmos
     /// instruction.
     const unsigned int Slots;
 
+    /// A bit mask indicating the valid slots, within a bundle, for the
+    /// instruction when "permissive-dual-issue" is enabled.
+    unsigned int Permissive_slots;
+
     /// Indicate whether the instruction assumes a long immediate field in the
     /// second slot of the instruction bundle (exclusively for the ALUl format).
     bool Is_long;
@@ -83,14 +87,21 @@ namespace patmos
     /// @param slots The set of legal slots of the instruction.
     /// @param is_long A flag indicating whether the format represents an ALUl
     /// instruction.
+    /// @param permissive_slots The set of legal slots of the instruction when "permissive-dual-issue" is enabled.
     binary_format_t(const instruction_t &instruction, word_t mask,
-                    word_t opcode, unsigned int slots, bool is_long = false) :
+                    word_t opcode, unsigned int slots, bool is_long = false, unsigned int permissive_slots=0) :
         Instruction(instruction), Bit_mask(mask), Opcode(opcode),
         Slots(slots), Is_long(is_long)
     {
       assert((opcode & mask) == opcode);
 
+      if(permissive_slots == 0) {
+        Permissive_slots = slots;
+      } else {
+        Permissive_slots = permissive_slots;
+      }
       assert(slots != 0 && slots <= 3);
+      assert(Permissive_slots != 0 && Permissive_slots <= 3);
       assert(!is_long || slots == 1);
     }
 
@@ -127,13 +138,13 @@ namespace patmos
     /// bundle.
     /// @return True when the instruction word matches the instruction format;
     /// false otherwise.
-    bool matches(word_t iw, unsigned int slot) const
+    bool matches(word_t iw, unsigned int slot, bool permissive_slots) const
     {
       assert(slot <= 2);
-
+      auto slot_mask = permissive_slots? Permissive_slots: Slots;
       // check the bit pattern against the mask and verify the slot position
       return ((iw & Bit_mask) == Opcode) &&
-             (Slots & (1 << (slot & 1))) != 0;
+             (slot_mask & (1 << (slot & 1))) != 0;
     }
 
     /// Return whether the instruction format is a long format (exclusively ALUl

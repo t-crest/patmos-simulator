@@ -434,7 +434,8 @@ int main(int argc, char **argv)
     ("led_offset", boost::program_options::value<patmos::address_t>()->default_value(patmos::LED_OFFSET), "offset where the LED device is mapped")
     ("deadline_offset", boost::program_options::value<patmos::address_t>()->default_value(patmos::DEADLINE_OFFSET), "offset where the deadline device is mapped")
     ("ethmac_offset", boost::program_options::value<patmos::address_t>()->default_value(patmos::ETHMAC_OFFSET), "offset where the EthMac device is mapped")
-    ("ethmac_ip_addr", boost::program_options::value<std::string>()->default_value(""), "Provide virtual network interface with the given IP address");
+    ("ethmac_ip_addr", boost::program_options::value<std::string>()->default_value(""), "Provide virtual network interface with the given IP address")
+    ("permissive-dual-issue", "loads, stores, and branches allowed in second slot when only one of each is enabled in either slot");
 
   boost::program_options::options_description uart_options("UART options");
   uart_options.add_options()
@@ -511,6 +512,8 @@ int main(int argc, char **argv)
   unsigned int deadline_offset = vm["deadline_offset"].as<patmos::address_t>().value();
   unsigned int ethmac_offset = vm["ethmac_offset"].as<patmos::address_t>().value();
   std::string  ethmac_ip_addr = vm["ethmac_ip_addr"].as<std::string>();
+  bool permissive_dual_issue = vm.count("permissive-dual-issue") != 0;
+
 
 #ifdef RAMULATOR
   patmos::main_memory_kind_e gkind = patmos::GM_SIMPLE;
@@ -656,7 +659,7 @@ int main(int argc, char **argv)
 
     patmos::symbol_map_t sym;
 
-    patmos::simulator_t s(freq, gm, mm, dc, ic, sc, sym, excunit);
+    patmos::simulator_t s(freq, gm, mm, dc, ic, sc, sym, excunit, permissive_dual_issue);
 
     // setup statistics printing
     patmos::stats_options_t &stats_options = s.Dbg_stack.get_stats_options();

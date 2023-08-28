@@ -98,8 +98,13 @@ namespace patmos
     unsigned int decode(word_t iw, word_t imm, unsigned int slot,
                         instruction_data_t &result);
   public:
+    /// Allow the use of loads, stores, and branch in the second issue slot
+    /// as long as only one of each is enabled per bundle. I.e. is two loads
+    /// are in the same slot, only one of them may be enabled.
+    bool Use_permissive_dual_issue;
+
     /// Construct a new instance of a Patmos decoder.
-    decoder_t();
+    decoder_t(bool use_permissive_dual_issue);
 
     /// Decode a binary encoded instruction bundle.
     /// @param iwp Pointer to binary data of the instruction bundle, the pointer

@@ -50,7 +50,7 @@ namespace patmos
 
   int decoder_t::NOP_ID;
 
-  decoder_t::decoder_t()
+  decoder_t::decoder_t(bool use_permissive_dual_issue) : Use_permissive_dual_issue(use_permissive_dual_issue)
   {
     // initialize the known instructions and binary formats.
     initialize_instructions();
@@ -67,7 +67,7 @@ namespace patmos
         ie(Instructions.end()); i != ie; i++)
     {
       const binary_format_t &fmt = *i->get<1>();
-      if (fmt.matches(iw, slot))
+      if (fmt.matches(iw, slot, Use_permissive_dual_issue))
       {
         // ensure that only one instruction type matches.
         assert(!matched);
@@ -120,7 +120,7 @@ namespace patmos
     // decode second instruction of bundle
     else if (decode(imm, 0, 1, result[1]) == 1)
     {
-      // two instructinos of the bundle decoded
+      // two instructions of the bundle decoded
       return 2;
     }
     else
