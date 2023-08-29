@@ -44,6 +44,7 @@
 #include "excunit.h"
 #include "instructions.h"
 #include "rtc.h"
+#include <boost/optional.hpp>
 
 #include <ios>
 #include <iostream>
@@ -128,17 +129,28 @@ namespace patmos
 
 	// Check permissive instructions
     if( Use_permissive_dual_issue && f == &instruction_data_t::DR) {
+      assert(NUM_SLOTS = 2);
       auto &pipe_instr0 = Pipeline[pst][0];
       auto &pipe_instr1 = Pipeline[pst][1];
       auto pred0 = PRR.get(pipe_instr0.Pred).get();
       auto pred1 = PRR.get(pipe_instr1.Pred).get();
 
       if(pred0 && pred1) {
+    	boost::optional<const char*> err;
         if(pipe_instr0.I->is_load() && pipe_instr1.I->is_load()) {
-          patmos::simulation_exception_t::illegal("Two simultaneously enabled loads", Pipeline[pst][0]);
+          err = "loads";
         }
         if(pipe_instr0.I->is_store() && pipe_instr1.I->is_store()) {
-          patmos::simulation_exception_t::illegal("Two simultaneously enabled stores", Pipeline[pst][0]);
+            err = "stores";
+        }
+        if(pipe_instr0.I->is_flow_control() && pipe_instr1.I->is_flow_control()) {
+            err = "control flows";
+        }
+
+        if(err) {
+          auto msg = std::string("Two simultaneously enabled ");
+          msg.append(*err);
+          patmos::simulation_exception_t::illegal(msg, Pipeline[pst][0]);
         }
       }
     }

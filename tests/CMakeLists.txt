@@ -166,6 +166,18 @@ Errors : 0")
 test_asm(59 "Emitted: 56 bytes
 Errors : 0")
 
+test_asm(60 "Emitted: 128 bytes
+Errors : 0")
+
+test_asm(61 "Emitted: 40 bytes
+Errors : 0")
+
+test_asm(62 "Emitted: 160 bytes
+Errors : 0")
+
+test_asm(63 "Emitted: 40 bytes
+Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -365,3 +377,15 @@ test_sim_arg(57 "--permissive-dual-issue" "r5 : 0000000c   r6 : 00000022")
 test_sim_arg(58 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled stores.*\\\\\\( p1\\\\\\) swm \\\\\\[r1 \\\\\\+ 0\\\\\\] = r3")
 
 test_sim_arg(59 "--permissive-dual-issue" "r4 : 0000007b   r5 : 000001c8")
+
+test_sim(60 "\\\\\\[Error\\\\\\] Illegal instruction: c4c00008.*PC : 00000014")
+
+test_sim_arg(60 "--permissive-dual-issue" "r1 : 0000007b   r2 : 000001c8   r3 : 0000009f   r4 : 000002f1")
+
+test_sim_arg(61 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled control flows.*br 8")
+
+test_sim(62 "\\\\\\[Error\\\\\\] Illegal instruction: acc00009")
+
+test_sim_arg(62 "--permissive-dual-issue" "r1 : 0000006f.*r2 : 000000de.*r3 : 0000014d.*r4 : 000001bc.*r5 : 0000022b.*r6 : 0000029a.*r7 : 00000309.*r8 : 00000378")
+
+test_sim_arg(63 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled control flows.*br 8")

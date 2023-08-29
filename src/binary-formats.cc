@@ -860,7 +860,8 @@ namespace patmos
   cfli_format_t::cfli_format_t(const instruction_t &instruction,
                                word_t opcode, word_t flag) :
       binary_format_t(instruction, 0x7c00000,
-                      insert(insert(0x4000000, 23, 2, opcode), 22, 1, flag), 1)
+                      insert(insert(0x4000000, 23, 2, opcode), 22, 1, flag),
+					  1, false, 3)
   {
   }
 
