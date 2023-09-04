@@ -245,8 +245,6 @@ namespace patmos
     }
   }
 
-
-
   void simulator_t::instruction_fetch()
   {
     // we get a pointer to the instructions of the IF stage, for easier
@@ -339,7 +337,7 @@ namespace patmos
         for(unsigned int j = 0; j < NUM_SLOTS; j++)
         {
           // assign fetch address to new instructions
-          instr_SIF[j].Address = PC;
+          instr_SIF[j].Address = PC + j*sizeof(word_t);
 
           // track instructions fetched
           if (instr_SIF[j].I)

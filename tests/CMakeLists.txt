@@ -178,6 +178,8 @@ Errors : 0")
 test_asm(63 "Emitted: 40 bytes
 Errors : 0")
 
+test_asm(66 "Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -389,3 +391,6 @@ test_sim(62 "\\\\\\[Error\\\\\\] Illegal instruction: acc00009")
 test_sim_arg(62 "--permissive-dual-issue" "r1 : 0000006f.*r2 : 000000de.*r3 : 0000014d.*r4 : 000001bc.*r5 : 0000022b.*r6 : 0000029a.*r7 : 00000309.*r8 : 00000378")
 
 test_sim_arg(63 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled control flows.*br 8")
+
+test_sim_arg(66 "--permissive-dual-issue" "r1 : 000001c8.*r2 : 000000b3.*r3 : 0000007b.*r4 : 00000315.*r5 : 0000009f.*r6 : 00000000")
+
