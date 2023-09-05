@@ -242,8 +242,7 @@ namespace patmos
     /// @param opcode The instruction's opcode.
     /// @param is_stack Flag indicating whether the instruction accesses the
     /// stack.
-    ldt_format_t(const instruction_t &instruction, word_t opcode,
-                 bool is_stack = false);
+    ldt_format_t(const instruction_t &instruction, word_t opcode);
 
     virtual instruction_data_t decode_operands(word_t iw, word_t longimm) const;
 
