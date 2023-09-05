@@ -137,14 +137,13 @@ namespace patmos
 
       if(pred0 && pred1) {
     	boost::optional<const char*> err;
-        if(pipe_instr0.I->is_load() && pipe_instr1.I->is_load()) {
-          err = "loads";
-        }
-        if(pipe_instr0.I->is_store() && pipe_instr1.I->is_store()) {
-            err = "stores";
+        if((pipe_instr0.I->is_load() || pipe_instr0.I->is_store()) &&
+           (pipe_instr1.I->is_load() || pipe_instr1.I->is_store())
+		) {
+          err = "load/store";
         }
         if(pipe_instr0.I->is_flow_control() && pipe_instr1.I->is_flow_control()) {
-            err = "control flows";
+          err = "control flows";
         }
 
         if(err) {
