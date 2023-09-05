@@ -598,10 +598,9 @@ namespace patmos
     return iw;
   }
 
-  ldt_format_t::ldt_format_t(const instruction_t &instruction, word_t opcode,
-                             bool is_stack) :
+  ldt_format_t::ldt_format_t(const instruction_t &instruction, word_t opcode) :
       binary_format_t(instruction, 0x7C00F80, insert(0x2800000, 7, 5, opcode),
-                      is_stack ? 3 : 1, false, 3)
+                      1, false, 3)
   {
   }
 

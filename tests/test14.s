@@ -12,8 +12,10 @@
                 shs     [r0 + 2] = r1;
                 sbs     [r0 + 6] = r1;
                 lws     r2  = [r0 + 0];
-                lhs     r3  = [r0 + 0]  ||     lbs     r4  = [r0 + 1];
-                lhus    r5  = [r0 + 0]  ||     lbus    r6  = [r0 + 1];
+                lhs     r3  = [r0 + 0];
+                lbs     r4  = [r0 + 1];
+                lhus    r5  = [r0 + 0];
+                lbus    r6  = [r0 + 1];
                 sfree   4;
                 halt;
 		nop;
