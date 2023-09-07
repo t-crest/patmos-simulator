@@ -1490,7 +1490,7 @@ namespace patmos
     }
   };
 
-#define LD_INSTR(name, base, atype, ctype) \
+#define LD_INSTR(name, base, atype, ctype, is_stack, is_main_mem) \
   class i_ ## name ## _t : public i_ldt_t \
   { \
   public:\
@@ -1502,6 +1502,8 @@ namespace patmos
           % ops.OPS.LDT.Rd % ops.OPS.LDT.Ra % ops.OPS.LDT.Imm; \
       symbols.print(os, ops.EX_Address); \
     } \
+	virtual bool is_stack_op() const { return is_stack; }\
+	virtual bool is_main_mem_op() const { return is_main_mem; }\
     virtual void EX(simulator_t &s, instruction_data_t &ops) const \
     { \
       ops.EX_Address = read_GPR_EX(s, ops.DR_Rs1) + ops.OPS.LDT.Imm*sizeof(atype); \
@@ -1523,33 +1525,33 @@ namespace patmos
     } \
   };
 
-  LD_INSTR(lws , s.Stack_cache, word_t, word_t)
-  LD_INSTR(lhs , s.Stack_cache, hword_t, word_t)
-  LD_INSTR(lbs , s.Stack_cache, byte_t, word_t)
-  LD_INSTR(lwus, s.Stack_cache, uword_t, uword_t)
-  LD_INSTR(lhus, s.Stack_cache, uhword_t, uword_t)
-  LD_INSTR(lbus, s.Stack_cache, ubyte_t, uword_t)
+  LD_INSTR(lws , s.Stack_cache, word_t, word_t, true, false)
+  LD_INSTR(lhs , s.Stack_cache, hword_t, word_t, true, false)
+  LD_INSTR(lbs , s.Stack_cache, byte_t, word_t, true, false)
+  LD_INSTR(lwus, s.Stack_cache, uword_t, uword_t, true, false)
+  LD_INSTR(lhus, s.Stack_cache, uhword_t, uword_t, true, false)
+  LD_INSTR(lbus, s.Stack_cache, ubyte_t, uword_t, true, false)
 
-  LD_INSTR(lwl , s.Local_memory, word_t, word_t)
-  LD_INSTR(lhl , s.Local_memory, hword_t, word_t)
-  LD_INSTR(lbl , s.Local_memory, byte_t, word_t)
-  LD_INSTR(lwul, s.Local_memory, uword_t, uword_t)
-  LD_INSTR(lhul, s.Local_memory, uhword_t, uword_t)
-  LD_INSTR(lbul, s.Local_memory, ubyte_t, uword_t)
+  LD_INSTR(lwl , s.Local_memory, word_t, word_t, false, false)
+  LD_INSTR(lhl , s.Local_memory, hword_t, word_t, false, false)
+  LD_INSTR(lbl , s.Local_memory, byte_t, word_t, false, false)
+  LD_INSTR(lwul, s.Local_memory, uword_t, uword_t, false, false)
+  LD_INSTR(lhul, s.Local_memory, uhword_t, uword_t, false, false)
+  LD_INSTR(lbul, s.Local_memory, ubyte_t, uword_t, false, false)
 
-  LD_INSTR(lwc , s.Data_cache, word_t, word_t)
-  LD_INSTR(lhc , s.Data_cache, hword_t, word_t)
-  LD_INSTR(lbc , s.Data_cache, byte_t, word_t)
-  LD_INSTR(lwuc, s.Data_cache, uword_t, uword_t)
-  LD_INSTR(lhuc, s.Data_cache, uhword_t, uword_t)
-  LD_INSTR(lbuc, s.Data_cache, ubyte_t, uword_t)
+  LD_INSTR(lwc , s.Data_cache, word_t, word_t, false, true)
+  LD_INSTR(lhc , s.Data_cache, hword_t, word_t, false, true)
+  LD_INSTR(lbc , s.Data_cache, byte_t, word_t, false, true)
+  LD_INSTR(lwuc, s.Data_cache, uword_t, uword_t, false, true)
+  LD_INSTR(lhuc, s.Data_cache, uhword_t, uword_t, false, true)
+  LD_INSTR(lbuc, s.Data_cache, ubyte_t, uword_t, false, true)
 
-  LD_INSTR(lwm , s.Memory, word_t, word_t)
-  LD_INSTR(lhm , s.Memory, hword_t, word_t)
-  LD_INSTR(lbm , s.Memory, byte_t, word_t)
-  LD_INSTR(lwum, s.Memory, uword_t, uword_t)
-  LD_INSTR(lhum, s.Memory, uhword_t, uword_t)
-  LD_INSTR(lbum, s.Memory, ubyte_t, uword_t)
+  LD_INSTR(lwm , s.Memory, word_t, word_t, false, true)
+  LD_INSTR(lhm , s.Memory, hword_t, word_t, false, true)
+  LD_INSTR(lbm , s.Memory, byte_t, word_t, false, true)
+  LD_INSTR(lwum, s.Memory, uword_t, uword_t, false, true)
+  LD_INSTR(lhum, s.Memory, uhword_t, uword_t, false, true)
+  LD_INSTR(lbum, s.Memory, ubyte_t, uword_t, false, true)
 
   /// Base class for memory store instructions.
   class i_stt_t : public i_pred_t
@@ -1664,7 +1666,7 @@ namespace patmos
     }
   };
 
-#define ST_INSTR(name, base, type) \
+#define ST_INSTR(name, base, type, is_stack, is_main_mem) \
   class i_ ## name ## _t : public i_stt_t \
   { \
   public:\
@@ -1676,6 +1678,8 @@ namespace patmos
           % ops.OPS.STT.Ra % ops.OPS.STT.Imm2 % ops.OPS.STT.Rs1; \
       symbols.print(os, ops.EX_Address); \
     } \
+	virtual bool is_stack_op() const { return is_stack; }\
+	virtual bool is_main_mem_op() const { return is_main_mem; }\
     virtual void EX(simulator_t &s, instruction_data_t &ops) const \
     { \
       ops.EX_Address = read_GPR_EX(s, ops.DR_Rs1) + ops.OPS.STT.Imm2*sizeof(type); \
@@ -1690,21 +1694,21 @@ namespace patmos
     } \
   };
 
-  ST_INSTR(sws, s.Stack_cache, word_t)
-  ST_INSTR(shs, s.Stack_cache, hword_t)
-  ST_INSTR(sbs, s.Stack_cache, byte_t)
+  ST_INSTR(sws, s.Stack_cache, word_t, true, false)
+  ST_INSTR(shs, s.Stack_cache, hword_t, true, false)
+  ST_INSTR(sbs, s.Stack_cache, byte_t, true, false)
 
-  ST_INSTR(swl, s.Local_memory, word_t)
-  ST_INSTR(shl, s.Local_memory, hword_t)
-  ST_INSTR(sbl, s.Local_memory, byte_t)
+  ST_INSTR(swl, s.Local_memory, word_t, false, false)
+  ST_INSTR(shl, s.Local_memory, hword_t, false, false)
+  ST_INSTR(sbl, s.Local_memory, byte_t, false, false)
 
-  ST_INSTR(swc, s.Data_cache, word_t)
-  ST_INSTR(shc, s.Data_cache, hword_t)
-  ST_INSTR(sbc, s.Data_cache, byte_t)
+  ST_INSTR(swc, s.Data_cache, word_t, false, true)
+  ST_INSTR(shc, s.Data_cache, hword_t, false, true)
+  ST_INSTR(sbc, s.Data_cache, byte_t, false, true)
 
-  ST_INSTR(swm, s.Memory, word_t)
-  ST_INSTR(shm, s.Memory, hword_t)
-  ST_INSTR(sbm, s.Memory, byte_t)
+  ST_INSTR(swm, s.Memory, word_t, false, true)
+  ST_INSTR(shm, s.Memory, hword_t, false, true)
+  ST_INSTR(sbm, s.Memory, byte_t, false, true)
 
 
   class i_stc_t : public i_pred_t
@@ -1720,7 +1724,8 @@ namespace patmos
                                  instruction_data_t &ops) const = 0;
     
   public:
-    
+    virtual bool is_main_mem_op() const { return true; }
+    virtual bool is_stack_op() const { return true; }
     virtual void EX(simulator_t &s, instruction_data_t &ops) const
     {
       // Get the size argument
@@ -2088,6 +2093,8 @@ namespace patmos
       }
     }
     
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual bool is_call() const {
       return true;
     }
@@ -2167,6 +2174,8 @@ namespace patmos
       symbols.print(os, ops.OPS.CFLi.UImm * sizeof(word_t));
     }
     
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual void EX(simulator_t &s, instruction_data_t &ops) const
     {
       ops.EX_Base    = ops.OPS.CFLi.UImm*sizeof(word_t);
@@ -2225,6 +2234,8 @@ namespace patmos
       os << "trap " << ops.OPS.CFLi.UImm;
     }
 
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual void DR(simulator_t &s, instruction_data_t &ops) const
     {
       ops.DR_Pred = s.PRR.get(ops.Pred).get();
@@ -2280,6 +2291,8 @@ namespace patmos
       os << "intr " << ops.OPS.CFLi.UImm;
       symbols.print(os, ops.OPS.CFLi.UImm * sizeof(word_t));
     }
+
+    virtual bool is_main_mem_op() const { return true; }
 
     virtual void EX(simulator_t &s, instruction_data_t &ops) const
     {
@@ -2454,6 +2467,8 @@ namespace patmos
       }
     }
     
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual bool is_call() const { 
       return true;
     }
@@ -2506,6 +2521,8 @@ namespace patmos
       os << "brcfr" << (ops.OPS.CFLi.D ? " r" : "nd r") << ops.OPS.CFLrt.Rs1 << ", r" << ops.OPS.CFLrt.Rs2;
     }
     
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual void EX(simulator_t &s, instruction_data_t &ops) const
     {
       ops.EX_Base   = read_GPR_EX(s, ops.DR_Rs1);
@@ -2544,6 +2561,8 @@ namespace patmos
   class i_ret_t : public i_cflri_t
   {
   public:
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual bool is_return() const { return true; }
     
     /// Print the instruction to an output stream.
@@ -2617,6 +2636,8 @@ namespace patmos
   
   class i_xret_t : public i_cflri_t {
   public:
+    virtual bool is_main_mem_op() const { return true; }
+
     virtual bool is_return() const { return true; }
 
     virtual void print(std::ostream &os, const instruction_data_t &ops,
