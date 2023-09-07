@@ -84,13 +84,23 @@ namespace patmos
     /// Returns true if the instruction is a flow control instruction
     virtual bool is_flow_control() const = 0;
 
+    /// Returns true if the instruction is a call instruction
     virtual bool is_call() const { return false; }
 
+    /// Returns true if the instruction is a return instruction
     virtual bool is_return() const { return false; }
 
+    /// Returns true if the instruction operates on the stack
+    virtual bool is_stack_op() const { return false; }
+
+    /// Returns true if the instruction is a load instruction
     virtual bool is_load() const { return false; }
 
+    /// Returns true if the instruction is a store instruction
     virtual bool is_store() const { return false; }
+
+    /// Returns true if the instruction may load from or store to main memory
+    virtual bool is_main_mem_op() const { return false; }
 
     /// Returns the number of delay slot cycles of this instruction
     virtual unsigned get_delay_slots(const instruction_data_t &ops) const = 0;

@@ -127,7 +127,7 @@ namespace patmos
       debug_out << pst << " : ";
     }
 
-	// Check permissive instructions
+    // Check permissive instructions
     if( Use_permissive_dual_issue && f == &instruction_data_t::DR) {
       assert(NUM_SLOTS = 2);
       auto &pipe_instr0 = Pipeline[pst][0];
@@ -135,15 +135,23 @@ namespace patmos
       auto pred0 = PRR.get(pipe_instr0.Pred).get();
       auto pred1 = PRR.get(pipe_instr1.Pred).get();
 
+#define is_combi(pred1, pred2) (\
+    (pipe_instr0.I->pred1() && pipe_instr1.I->pred2()) || \
+    (pipe_instr0.I->pred2() && pipe_instr1.I->pred1()) )
+
       if(pred0 && pred1) {
-    	boost::optional<const char*> err;
-        if((pipe_instr0.I->is_load() || pipe_instr0.I->is_store()) &&
-           (pipe_instr1.I->is_load() || pipe_instr1.I->is_store())
-		) {
-          err = "load/store";
-        }
-        if(pipe_instr0.I->is_flow_control() && pipe_instr1.I->is_flow_control()) {
-          err = "control flows";
+        boost::optional<const char*> err;
+        if( is_combi(is_load, is_load) ||
+            is_combi(is_store, is_store) ||
+            is_combi(is_store, is_load)
+        ){
+          err = "load/store operations";
+        } else if(is_combi(is_stack_op, is_stack_op)){
+          err = "stack operations";
+        } else if(is_combi(is_main_mem_op, is_main_mem_op)){
+          err = "main-memory operations";
+        } else if(is_combi(is_flow_control, is_flow_control)) {
+          err = "control-flow operations";
         }
 
         if(err) {
