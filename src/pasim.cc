@@ -435,7 +435,7 @@ int main(int argc, char **argv)
     ("deadline_offset", boost::program_options::value<patmos::address_t>()->default_value(patmos::DEADLINE_OFFSET), "offset where the deadline device is mapped")
     ("ethmac_offset", boost::program_options::value<patmos::address_t>()->default_value(patmos::ETHMAC_OFFSET), "offset where the EthMac device is mapped")
     ("ethmac_ip_addr", boost::program_options::value<std::string>()->default_value(""), "Provide virtual network interface with the given IP address")
-    ("permissive-dual-issue", "loads, stores, and branches allowed in second slot when only one of each is enabled in either slot");
+    ("permissive-dual-issue", "Enables instructions in the second issue slot that are otherwise prohibited (e.g. loads, stores, branches). Some restrictions apply, which require some instruction combinations to not be enabled simultaneously (e.g. 2 loads).");
 
   boost::program_options::options_description uart_options("UART options");
   uart_options.add_options()
