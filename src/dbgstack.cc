@@ -132,6 +132,9 @@ namespace patmos
 
   void dbgstack_t::push(uword_t base, uword_t offset, uword_t target)
   {
+	  // The following (commented out) code is bugged, resulting in otherwise correct programs to not print
+	  // statistics.
+/*
     if (!stack.empty()) {
       // Check if the call is coming from the TOS.
       if (!is_active_frame(stack.back())) {
@@ -145,6 +148,7 @@ namespace patmos
         }
       }
     }
+*/
     // Create a new stack frame
     stack.push_back( dbgstack_frame_t(sim, base, offset, target) );
 
