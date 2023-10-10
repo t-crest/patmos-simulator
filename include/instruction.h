@@ -102,6 +102,9 @@ namespace patmos
     /// Returns true if the instruction may load from or store to main memory
     virtual bool is_main_mem_op() const { return false; }
 
+    /// Returns true if the instruction is a multiply instruction
+    virtual bool is_multiply() const { return false; }
+
     /// Returns the number of delay slot cycles of this instruction
     virtual unsigned get_delay_slots(const instruction_data_t &ops) const = 0;
 

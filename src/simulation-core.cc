@@ -145,18 +145,21 @@ namespace patmos
             is_combi(is_store, is_store) ||
             is_combi(is_store, is_load)
         ){
-          err = "load/store operations";
+          err = "load/store";
         } else if(is_combi(is_stack_op, is_stack_op)){
-          err = "stack operations";
+          err = "stack";
         } else if(is_combi(is_main_mem_op, is_main_mem_op)){
-          err = "main-memory operations";
+          err = "main-memory";
         } else if(is_combi(is_flow_control, is_flow_control)) {
-          err = "control-flow operations";
+          err = "control-flow";
+        } else if(is_combi(is_multiply, is_multiply)) {
+          err = "multiply";
         }
 
         if(err) {
           auto msg = std::string("Two simultaneously enabled ");
           msg.append(*err);
+          msg.append(" operations");
           patmos::simulation_exception_t::illegal(msg, Pipeline[pst][0]);
         }
       }
