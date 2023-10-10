@@ -285,7 +285,7 @@ namespace patmos
   alum_format_t::alum_format_t(const instruction_t &instruction,
                                word_t opcode) :
       binary_format_t(instruction, 0x7C0007F, insert(0x2000020, 0, 4, opcode),
-                      3)
+                      1, false, 3)
   {
   }
 

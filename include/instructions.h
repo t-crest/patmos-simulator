@@ -651,6 +651,8 @@ namespace patmos
       printGPReg(os, ", "   , ops.OPS.ALUm.Rs2, ops.DR_Rs2, s);
     }
 
+    virtual bool is_multiply() const { return true; }
+
     virtual unsigned get_intr_delay_slots(const instruction_data_t &ops) const {
       return 1;
     }

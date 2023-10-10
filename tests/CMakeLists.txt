@@ -189,6 +189,12 @@ test_asm(69 "Errors : 0")
 
 test_asm(70 "Errors : 0")
 
+test_asm(71 "Errors : 0")
+
+test_asm(72 "Errors : 0")
+
+test_asm(73 "Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -415,3 +421,10 @@ test_sim_arg(69 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instructi
 
 test_sim_arg(70 "--permissive-dual-issue" "r1 : 0000007b.*r3 : 000001c8")
 
+test_sim(71 "\\\\\\[Error\\\\\\] Illegal instruction: 8006007b")
+
+test_sim_arg(71 "--permissive-dual-issue" "r3 : 0000007b.*s2 : 00000002.*s3 : 00000001")
+
+test_sim_arg(72 "--permissive-dual-issue" "r4 : 00000006.*s2 : 00000000.*s3 : 00000003")
+
+test_sim_arg(73 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled multiply operations")
