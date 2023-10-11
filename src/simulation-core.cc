@@ -326,13 +326,8 @@ namespace patmos
       else
       {
         // decode the instruction word.
-        unsigned int iw_size = Decoder.decode(iw, instr_SIF);
-
-        // unknown instruction: throw exception
-        if (iw_size == 0)
-        {
-          simulation_exception_t::illegal(from_big_endian<big_word_t>(iw[0]));
-        }
+        unsigned int iw_size = Decoder.decode(iw, instr_SIF, true);
+        assert(iw_size != 0);
 
         // First pipeline is special.. handle branches and loads.
         const instruction_t *i0 = instr_SIF[0].I;
