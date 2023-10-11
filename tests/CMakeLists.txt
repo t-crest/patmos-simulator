@@ -381,13 +381,13 @@ test_elf_exit_sim(53 "r1 : 00000000")
 
 test_elf_exit_sim(54 "r1 : 0000007b   r2 : 000001c8")
 
-test_sim(55 "\\\\\\[Error\\\\\\] Illegal instruction: 8a861180.*PC : 00000014")
+test_sim(55 "\\\\\\[Error\\\\\\] Illegal instruction: 12882180.*PC : 00000014")
 
 test_sim_arg(55 "--permissive-dual-issue" "r3 : 0000007b   r4 : 000001c8")
 
 test_sim_arg(56 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled load/store.*\\\\\\( p1\\\\\\) lwm r3 = \\\\\\[r1 \\\\\\+ 0\\\\\\]")
 
-test_sim(57 "\\\\\\[Error\\\\\\] Illegal instruction: 92c61180.*PC : 00000024")
+test_sim(57 "\\\\\\[Error\\\\\\] Illegal instruction: 1ac62200.*PC : 00000024")
 
 test_sim_arg(57 "--permissive-dual-issue" "r5 : 0000000c   r6 : 00000022")
 
@@ -395,19 +395,19 @@ test_sim_arg(58 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instructi
 
 test_sim_arg(59 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled load/store.*\\\\\\( p7\\\\\\) lwc r3 = \\\\\\[r0 \\\\\\+ 0\\\\\\]")
 
-test_sim(60 "\\\\\\[Error\\\\\\] Illegal instruction: c4c00008.*PC : 00000014")
+test_sim(60 "\\\\\\[Error\\\\\\] Illegal instruction: 04c0000c.*PC : 00000014")
 
 test_sim_arg(60 "--permissive-dual-issue" "r1 : 0000007b   r2 : 000001c8   r3 : 0000009f   r4 : 000002f1")
 
 test_sim_arg(61 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled control-flow operations.*br 8")
 
-test_sim(62 "\\\\\\[Error\\\\\\] Illegal instruction: acc00009")
+test_sim(62 "\\\\\\[Error\\\\\\] Illegal instruction: 4440001e")
 
 test_sim_arg(62 "--permissive-dual-issue" "r1 : 0000006f.*r2 : 000000de.*r3 : 0000014d.*r4 : 000001bc.*r5 : 0000022b.*r6 : 0000029a.*r7 : 00000309.*r8 : 00000378")
 
 test_sim_arg(63 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled control-flow operations.*br 8")
 
-test_sim(64 "\\\\\\[Error\\\\\\] Illegal instruction: 800801c8")
+test_sim(64 "\\\\\\[Error\\\\\\] Illegal instruction: 02c00100")
 
 test_sim_arg(64 "--permissive-dual-issue" "r3 : 0000007b.*r4 : 000001c8.*r5 : 00000315")
 
@@ -421,7 +421,7 @@ test_sim_arg(69 "--permissive-dual-issue" "\\\\\\[Error\\\\\\] Illegal instructi
 
 test_sim_arg(70 "--permissive-dual-issue" "r1 : 0000007b.*r3 : 000001c8")
 
-test_sim(71 "\\\\\\[Error\\\\\\] Illegal instruction: 8006007b")
+test_sim(71 "\\\\\\[Error\\\\\\] Illegal instruction: 02001121")
 
 test_sim_arg(71 "--permissive-dual-issue" "r3 : 0000007b.*s2 : 00000002.*s3 : 00000001")
 

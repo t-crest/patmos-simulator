@@ -41,6 +41,7 @@
 #include "loader.h"
 #include "symbol.h"
 #include "simulation-core.h"
+#include "exception.h"
 
 #include <algorithm>
 
@@ -87,7 +88,7 @@ namespace patmos
             (is_long ? 2 : 1) : 0;
   }
 
-  unsigned int decoder_t::decode(word_t *iwp, instruction_data_t *result)
+  unsigned int decoder_t::decode(word_t *iwp, instruction_data_t *result, bool throw_error)
   {
     word_t iw = from_big_endian<big_word_t>(iwp[0]);
     word_t imm = from_big_endian<big_word_t>(iwp[1]);
@@ -97,7 +98,11 @@ namespace patmos
     if (size == 0)
     {
       // unknown instruction -- report error
-      return 0;
+      if(throw_error) {
+        simulation_exception_t::illegal(from_big_endian<big_word_t>(iwp[0]));
+      } else {
+        return 0;
+      }
     }
     else if (size == 2)
     {
@@ -126,7 +131,11 @@ namespace patmos
     else
     {
       // unknown instruction or invalid encoding? -- report error
-      return 0;
+      if(throw_error) {
+        simulation_exception_t::illegal(from_big_endian<big_word_t>(iwp[1]));
+      } else {
+        return 0;
+      }
     }
 
     // we should never get here
