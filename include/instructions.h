@@ -78,7 +78,7 @@ namespace patmos
     /// @param os The output stream to print to.
     /// @param ops The operands of the instruction.
     /// @param symbols A mapping of addresses to symbols.
-    virtual void print_operands(const simulator_t &s, std::ostream &os, 
+    virtual void print_operands(const simulator_t &s, std::ostream &os,
 	               const instruction_data_t &ops,
                        const symbol_map_t &symbols) const
     { }
@@ -98,7 +98,7 @@ namespace patmos
     {
       return 0;
     }
-    
+
     /// Pipeline function to simulate the behavior of the instruction in
     /// the DR pipeline stage.
     /// @param s The Patmos simulator executing the instruction.
@@ -2087,7 +2087,7 @@ namespace patmos
         s.pipeline_flush(SMW);
 
         if (!ops.OPS.CFLi.D){
-          // The above flush resets the execution stage's.
+          // The above flush resets the execution stages.
           // We reassign it here in case we are stalling, such that the repeated
           // calls to this function will get the right "ret_pc" every time.
           s.Pipeline[SEX][0].Address = ret_pc;
@@ -2599,11 +2599,12 @@ namespace patmos
       if (ops.DR_Pred && ops.EX_Base == 0)
       {
         s.halt();
+        s.pipeline_flush(SMW);
       }
       else if (ops.DR_Pred)
       {
         pop_dbgstack(s, ops, ops.DR_Pred, ops.EX_Base, ops.EX_Offset);
-        
+
         fetch_and_dispatch(s, ops, ops.DR_Pred, ops.EX_Base, ops.EX_Address);
 
         if (!ops.OPS.CFLri.D && ops.DR_Pred)

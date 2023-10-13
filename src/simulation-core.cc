@@ -168,6 +168,15 @@ namespace patmos
     // invoke simulation functions
     for(unsigned int i = 0; i < NUM_SLOTS; i++)
     {
+      // If an invalid instruction reaches its execution stage, throw error
+      // This is because the predicate of preceding instructions may decide whether succeeding instruction
+      // execute. Predicates are only ready in the execution stage of preceding instruction, where
+      // invalids might be flushed. If not, then we are sure the invalid should have been executed
+      // and can therefore error
+      if(f == &instruction_data_t::EX && Pipeline[pst][i].I == &instruction_data_t::Invalid_Instr){
+    	  patmos::simulation_exception_t::illegal("", Pipeline[pst][i]);
+      }
+
       // debug output
       if (debug)
       {
@@ -326,7 +335,7 @@ namespace patmos
       else
       {
         // decode the instruction word.
-        unsigned int iw_size = Decoder.decode(iw, instr_SIF, true);
+        unsigned int iw_size = Decoder.decode(iw, instr_SIF, false);
         assert(iw_size != 0);
 
         // First pipeline is special.. handle branches and loads.
@@ -366,7 +375,6 @@ namespace patmos
                         bool debug_nopc, uint64_t max_cycles,
                         bool collect_instr_stats)
   {
-
     // do some initializations before executing the first instruction.
     if (Cycle == 0)
     {

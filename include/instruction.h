@@ -160,10 +160,78 @@ namespace patmos
     virtual void MW(simulator_t &s, instruction_data_t &ops) const = 0;
   };
 
+  /// An instruction representing fetched bytes that aren't an instruction
+    class i_invalid_t : public instruction_t
+    {
+    public:
+      /// Print the instruction to an output stream.
+      /// @param os The output stream to print to.
+      /// @param ops The operands of the instruction.
+      /// @param symbols A mapping of addresses to symbols.
+      virtual void print(std::ostream &os, const instruction_data_t &ops,
+                         const symbol_map_t &symbols) const
+      {
+        os << "invalid";
+      }
+
+      /// Print the instruction to an output stream.
+      /// @param os The output stream to print to.
+      /// @param ops The operands of the instruction.
+      /// @param symbols A mapping of addresses to symbols.
+      virtual void print_operands(const simulator_t &s, std::ostream &os,
+  	               const instruction_data_t &ops,
+                         const symbol_map_t &symbols) const
+      { }
+
+      /// Returns false, nop is not a flow control instruction
+      virtual bool is_flow_control() const
+      {
+        return false;
+      }
+
+      virtual unsigned get_delay_slots(const instruction_data_t &ops) const
+      {
+        return 0;
+      }
+
+      virtual unsigned get_intr_delay_slots(const instruction_data_t &ops) const
+      {
+
+    	  return 0;
+      }
+
+      /// Pipeline function to simulate the behavior of the instruction in
+      /// the DR pipeline stage.
+      /// @param s The Patmos simulator executing the instruction.
+      /// @param ops The operands of the instruction.
+      virtual void DR(simulator_t &s, instruction_data_t &ops) const
+      {
+      }
+
+      /// Pipeline function to simulate the behavior of the instruction in
+      /// the EX pipeline stage.
+      /// @param s The Patmos simulator executing the instruction.
+      /// @param ops The operands of the instruction.
+      virtual void EX(simulator_t &s, instruction_data_t &ops) const
+      {
+      }
+
+      /// Pipeline function to simulate the behavior of the instruction in
+      /// the MW pipeline stage.
+      /// @param s The Patmos simulator executing the instruction.
+      /// @param ops The operands of the instruction.
+      virtual void MW(simulator_t &s, instruction_data_t &ops) const
+      {
+      }
+    };
+
+
   /// Data structure to keep data of instructions while executing.
   class instruction_data_t
   {
   public:
+    /// The invalid instruction. (for use with I)
+	static i_invalid_t Invalid_Instr;
     /// The instruction class that implements the behavior.
     const instruction_t *I;
 
@@ -379,6 +447,9 @@ namespace patmos
     instruction_data_t(const instruction_t &i, PRR_e pred);
 
     // -------------------- CONSTRUCTOR FUNCTIONS ------------------------------
+
+    /// Create an invalid instruction
+    static instruction_data_t mk_invalid();
 
     /// Create an ALUi or ALUl instruction with a register operands, an
     /// immediate, and a register destination.

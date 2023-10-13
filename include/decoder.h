@@ -111,11 +111,12 @@ namespace patmos
     /// has to point to an array of at least two elements.
     /// @param result A pointer to an array to store the data of the decoded
     /// instructions.
-    /// @param throw_error If true, throws an error instead of returning 0
+    /// @param throw_error If true, when invalid bytes are encountered, return 0
+    /// if false, returns the invalid instruction
     /// @return The number of words occupied by the decoded instructions, i.e.,
     /// 1 or 2 if the instructions were decoded successfully, 0 in case of an
     /// error.
-    unsigned int decode(word_t *iwp, instruction_data_t *result, bool throw_error=false);
+    unsigned int decode(word_t *iwp, instruction_data_t *result, bool throw_error=true);
 
     /// Decode a stream of instructions provided by a binary loader.
     /// @return 0 on success, or any error code returned by the callback handler

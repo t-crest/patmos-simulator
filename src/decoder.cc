@@ -99,9 +99,11 @@ namespace patmos
     {
       // unknown instruction -- report error
       if(throw_error) {
-        simulation_exception_t::illegal(from_big_endian<big_word_t>(iwp[0]));
+    	return 0;
       } else {
-        return 0;
+        result[0] = instruction_data_t::mk_invalid();
+        result[1] = instruction_data_t();
+        return 1;
       }
     }
     else if (size == 2)
@@ -132,9 +134,10 @@ namespace patmos
     {
       // unknown instruction or invalid encoding? -- report error
       if(throw_error) {
-        simulation_exception_t::illegal(from_big_endian<big_word_t>(iwp[1]));
+      	return 0;
       } else {
-        return 0;
+        result[1] = instruction_data_t::mk_invalid();
+        return 2;
       }
     }
 
