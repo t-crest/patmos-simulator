@@ -39,6 +39,10 @@
 
 namespace patmos
 {
+
+
+  i_invalid_t instruction_data_t::Invalid_Instr;
+
   instruction_data_t::instruction_data_t() : I(NULL), Address(0), Pred(pn0)
   {
   }
@@ -46,6 +50,10 @@ namespace patmos
   instruction_data_t::instruction_data_t(const instruction_t &i, PRR_e pred) :
     I(&i), Address(0), Pred(pred)
   {
+  }
+
+  instruction_data_t instruction_data_t::mk_invalid() {
+	  return instruction_data_t(instruction_data_t::Invalid_Instr, pn0);
   }
 
   instruction_data_t instruction_data_t::mk_ALUil(const instruction_t &i,
