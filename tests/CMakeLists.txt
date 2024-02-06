@@ -62,7 +62,7 @@ Errors : 0")
 test_asm(18 "Emitted: 28 bytes
 Errors : 0")
 
-test_asm(19 "Emitted: 28 bytes
+test_asm(19 "Emitted: 32 bytes
 Errors : 0")
 
 test_asm(21 "Emitted: 92 bytes
@@ -201,6 +201,12 @@ test_asm(75 "Errors : 0")
 
 test_asm(76 "Errors : 0")
 
+test_asm(77 "Errors : 0")
+
+test_asm(78 "Errors : 0")
+
+test_asm(79 "Errors : 0")
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # SIMULATOR TESTS
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -213,7 +219,7 @@ endmacro (test_sim)
 macro (test_sim_arg num args expr)
   ADD_TEST(sim-test-arg-${num} ${CMAKE_BINARY_DIR}/src/pasim -V --maxc 40000 -o - ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin ${args})
   SET_TESTS_PROPERTIES(sim-test-arg-${num} PROPERTIES PASS_REGULAR_EXPRESSION ${expr} DEPENDS asm-test-${num})
-endmacro (test_sim)
+endmacro (test_sim_arg)
 
 macro (test_dsim num expr)
   ADD_TEST(simd-test-${num} ${CMAKE_BINARY_DIR}/src/pasim -V -G 10 --maxc 40000 ${CMAKE_CURRENT_BINARY_DIR}/test${num}.bin)
@@ -440,3 +446,9 @@ test_sim(74 "r1 : 00000539")
 test_sim(75 "\\\\\\[Error\\\\\\] Illegal instruction:.*00000008:.*invalid")
 
 test_sim(76 "r1 : 00000539")
+
+test_sim(77 "\\\\\\[Error\\\\\\] Illegal instruction: Two simultaneously enabled register write operations")
+
+test_sim(78 "r1 : 00000010.*r2 : 0000000b")
+
+test_sim(79 "r1 : 00000020")

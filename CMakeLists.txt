@@ -96,7 +96,7 @@ add_subdirectory(tests)
 
 # Save the target triple in a variable
 execute_process( COMMAND gcc -dumpmachine OUTPUT_VARIABLE DUMP_MACHINE OUTPUT_STRIP_TRAILING_WHITESPACE )
-message(WARNING "Machine Triple: ${DUMP_MACHINE}")
+message(STATUS "Machine Triple: ${DUMP_MACHINE}")
 if (${DUMP_MACHINE} MATCHES "x86_64-linux-gnu")
 	set( TARGET_TRIPLE "x86_64-linux-gnu")
 elseif(${DUMP_MACHINE} MATCHES "x86_64-apple-darwin.*")

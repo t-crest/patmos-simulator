@@ -127,20 +127,26 @@ namespace patmos
       debug_out << pst << " : ";
     }
 
-    // Check permissive instructions
-    if( Use_permissive_dual_issue && f == &instruction_data_t::DR) {
-      assert(NUM_SLOTS = 2);
-      auto &pipe_instr0 = Pipeline[pst][0];
-      auto &pipe_instr1 = Pipeline[pst][1];
-      auto pred0 = PRR.get(pipe_instr0.Pred).get();
-      auto pred1 = PRR.get(pipe_instr1.Pred).get();
+    auto &pipe_instr0 = Pipeline[pst][0];
+    auto &pipe_instr1 = Pipeline[pst][1];
+    auto pred0 = PRR.get(pipe_instr0.Pred).get();
+    auto pred1 = PRR.get(pipe_instr1.Pred).get();
+
+    if(pred0 && pred1 && f == &instruction_data_t::DR) {
+      boost::optional<const char*> err;
+
+      if(pipe_instr0.I->get_dst_reg(Pipeline[pst][0]) != patmos::GPR_e::r0 &&
+        pipe_instr0.I->get_dst_reg(Pipeline[pst][0]) == pipe_instr1.I->get_dst_reg(Pipeline[pst][1])
+      ){
+        err = "register write";
+      } else if(Use_permissive_dual_issue) {
+        assert(NUM_SLOTS = 2);
 
 #define is_combi(pred1, pred2) (\
     (pipe_instr0.I->pred1() && pipe_instr1.I->pred2()) || \
     (pipe_instr0.I->pred2() && pipe_instr1.I->pred1()) )
 
-      if(pred0 && pred1) {
-        boost::optional<const char*> err;
+        // Check permissive instructions
         if( is_combi(is_load, is_load) ||
             is_combi(is_store, is_store) ||
             is_combi(is_store, is_load)
@@ -155,13 +161,13 @@ namespace patmos
         } else if(is_combi(is_multiply, is_multiply)) {
           err = "multiply";
         }
+      }
 
-        if(err) {
-          auto msg = std::string("Two simultaneously enabled ");
-          msg.append(*err);
-          msg.append(" operations");
-          patmos::simulation_exception_t::illegal(msg, Pipeline[pst][0]);
-        }
+      if(err) {
+        auto msg = std::string("Two simultaneously enabled ");
+        msg.append(*err);
+        msg.append(" operations");
+        patmos::simulation_exception_t::illegal(msg, Pipeline[pst][0]);
       }
     }
 
