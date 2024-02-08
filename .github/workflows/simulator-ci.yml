@@ -32,6 +32,9 @@ jobs:
           - platform: macos-12
             cc: clang
             cxx: clang++
+          - platform: macos-14
+            cc: clang
+            cxx: clang++
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/build-package 
@@ -50,6 +53,9 @@ jobs:
             cc: gcc
             cxx: g++
           - platform: macos-12
+            cc: clang
+            cxx: clang++
+          - platform: macos-14
             cc: clang
             cxx: clang++
     # Run after the test jobs finish      
